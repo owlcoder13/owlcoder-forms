@@ -24,6 +24,8 @@ class Form implements IFormEvent
     public $files;
     public $config;
 
+    public static $defaultConnector = ArrayConnector
+
     /**
      * @var array
      */
