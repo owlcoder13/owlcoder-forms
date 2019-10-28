@@ -1,0 +1,11 @@
+{
+    "name": "owlcoder/forms",
+    "description": "PHP form with easy building",
+    "authors": [
+        {
+            "name": "Mikhail",
+            "email": "owlcoder1@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
