@@ -4,6 +4,7 @@ namespace Owl\OwlForms;
 
 use Owl\Common\EventTrait;
 use Owl\Common\Helpers\StringHelper;
+use Owl\OwlForms\Connectors\ArrayConnector;
 use Owl\OwlForms\Events\FormSetFieldValueEvent;
 use Owl\OwlForms\Events\FormSetInstanceValueEvent;
 use Owl\OwlForms\Fields\Field;
@@ -24,7 +25,7 @@ class Form implements IFormEvent
     public $files;
     public $config;
 
-    public static $defaultConnector = ArrayConnector
+    public static $defaultConnector = ArrayConnector::class;
 
     /**
      * @var array
