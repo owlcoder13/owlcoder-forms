@@ -8,10 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
 
-class ImageField extends Field
+class ImageField extends FileField
 {
-    public $template = 'forms.image-field';
-
     /** @var  UploadedFile */
     public $file;
 
