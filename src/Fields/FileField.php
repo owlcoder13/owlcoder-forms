@@ -10,13 +10,20 @@ use Symfony\Component\HttpFoundation\FileBag;
 
 class FileField extends Field
 {
-    public $template = 'forms.file-field';
-
     /** @var  UploadedFile */
     public $file;
 
     /** @var string */
     public $uri;
+
+    public function renderInput()
+    {
+        $attributes = $this->buildInputAttributes([
+            'value' => $this->escapeAttrValue($this->getValue()),
+        ]);
+
+        return "<input {$attributes} type='file' value='{$this->value}'/>";
+    }
 
     /** @var string */
     public $directory;
