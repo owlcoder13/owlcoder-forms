@@ -8,7 +8,6 @@ use Owl\OwlForms\Connectors\ArrayConnector;
 use Owl\OwlForms\Events\FormSetFieldValueEvent;
 use Owl\OwlForms\Events\FormSetInstanceValueEvent;
 use Owl\OwlForms\Fields\Field;
-use Owl\OwlForms\Fields\FormSetField;
 use Owl\Common\Helpers\DataHelper;
 
 class Form implements IFormEvent
@@ -77,7 +76,7 @@ class Form implements IFormEvent
         $out[] = "<div id='{$this->id}'>";
 
         foreach ($this->fields as $field) {
-            $out[] = "<div>" . $field->render() . "</div>";
+            $out[] = "<div class='form-group'>" . $field->render() . "</div>";
         }
 
         $out[] = "</div>";
@@ -106,6 +105,10 @@ class Form implements IFormEvent
 
     public function load($data = [], $files = [])
     {
+        if (count($data) == 0 && count($files) == 0) {
+            return false;
+        }
+
         $this->data = $data;
         $this->files = $files;
 
@@ -130,7 +133,7 @@ class Form implements IFormEvent
     public function save()
     {
         if ( ! $this->validate()) {
-            return;
+            return false;
         }
 
         foreach ($this->fields as $field) {
@@ -149,6 +152,8 @@ class Form implements IFormEvent
         foreach ($this->fields as $field) {
             $field->afterSave();
         }
+
+        return true;
     }
 
     public static function removeScriptTag($content)
