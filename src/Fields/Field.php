@@ -255,7 +255,7 @@ class Field implements IFieldEvent
 
     public function getFileByKey($files, $key, $default = null)
     {
-        $file = DataHelper::set($files, $key, $default);
+        $file = DataHelper::get($files, $key, $default);
         return empty($file) ? $default : $file;
     }
 }

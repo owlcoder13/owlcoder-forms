@@ -39,6 +39,7 @@ class ImageField extends FileField
     public function load($data, $files)
     {
         $this->file = $this->getFileByKey($files, $this->attribute, null);
+
         if ($this->file) {
             data_set($this->instance, $this->attribute, $this->uri . $this->file->getClientOriginalName());
         }
