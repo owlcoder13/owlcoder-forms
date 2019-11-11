@@ -1,8 +1,8 @@
 <?php
 
-namespace Owl\OwlForms\Fields;
+namespace Owlcoder\Forms\Fields;
 
-use Owl\OwlForms\Form;
+use Owlcoder\Forms\Form;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

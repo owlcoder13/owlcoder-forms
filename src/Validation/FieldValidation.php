@@ -1,12 +1,12 @@
 <?php
 
-namespace Owl\OwlForms\Validation;
+namespace Owlcoder\Forms\Validation;
 
-use Owl\OwlForms\Form;
+use Owlcoder\Forms\Form;
 
 /**
  * Trait FieldValidation
- * @package Owl\OwlForms
+ * @package Owlcoder\Forms
  *
  * @property Form $form
  * @property $instance

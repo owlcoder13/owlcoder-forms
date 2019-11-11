@@ -1,6 +1,6 @@
 <?php
 
-namespace Owl\OwlForms\Fields;
+namespace Owlcoder\Forms\Fields;
 
 class UrlField extends Field
 {
@@ -8,7 +8,7 @@ class UrlField extends Field
     {
         $value = $this->getValue();
         if ($value[0] != '/') {
-            throw new \Owl\OwlForms\ValidationException("Url must starts with '/'");
+            throw new \Owlcoder\Forms\ValidationException("Url must starts with '/'");
         }
     }
 }

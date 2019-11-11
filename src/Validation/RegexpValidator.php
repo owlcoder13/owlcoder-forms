@@ -1,6 +1,6 @@
 <?php
 
-namespace Owl\OwlForms\Validation;
+namespace Owlcoder\Forms\Validation;
 
 class RegexpValidator extends Validator
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Owl\OwlForms\Fields;
+namespace Owlcoder\Forms\Fields;
 
 class Select2Field extends SelectField
 {

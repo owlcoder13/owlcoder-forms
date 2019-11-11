@@ -1,6 +1,6 @@
 <?php
 
-namespace Owl\OwlForms\Connectors;
+namespace Owlcoder\Forms\Connectors;
 
 class ArrayConnector implements IConnector
 {

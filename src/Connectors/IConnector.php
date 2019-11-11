@@ -1,6 +1,6 @@
 <?php
 
-namespace Owl\OwlForms\Connectors;
+namespace Owlcoder\Forms\Connectors;
 
 interface IConnector
 {

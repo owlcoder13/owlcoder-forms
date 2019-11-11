@@ -1,6 +1,6 @@
 <?php
 
-namespace Owl\OwlForms\Providers;
+namespace Owlcoder\Forms\Providers;
 
 use Carbon\Laravel\ServiceProvider;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Owl\OwlForms;
+namespace Owlcoder\Forms;
 
 class FieldEvent
 {

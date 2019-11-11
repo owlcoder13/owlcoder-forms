@@ -1,8 +1,8 @@
 <?php
 
-namespace Owl\OwlForms\Fields;
+namespace Owlcoder\Forms\Fields;
 
-use Owl\OwlForms\Form;
+use Owlcoder\Forms\Form;
 use mysql_xdevapi\Exception;
 
 class HiddenId extends Field

@@ -1,8 +1,8 @@
 <?php
 
-namespace Owl\OwlForms\Events;
+namespace Owlcoder\Forms\Events;
 
-use Owl\OwlForms\Fields\Field;
+use Owlcoder\Forms\Fields\Field;
 
 class FormSetInstanceValueEvent extends Event
 {
