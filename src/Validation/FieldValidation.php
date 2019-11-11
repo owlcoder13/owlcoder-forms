@@ -83,6 +83,8 @@ trait FieldValidation
                 return new RequiredValidator($field, []);
             case 'strip-tags':
                 return new StripTagsValidator($field, []);
+            case 'number':
+                return new NumberValidator($field, []);
         }
 
         throw new \Exception('Validator not found');

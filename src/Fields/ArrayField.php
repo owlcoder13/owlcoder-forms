@@ -34,6 +34,20 @@ class ArrayField extends Field
         $this->hiddenForm = $this->createHiddenForm();
     }
 
+    /**
+     * Validate all forms
+     * @return bool
+     */
+    public function validate()
+    {
+        $valid = 1;
+        foreach ($this->forms as $one) {
+            $valid &= $one->validate();
+        }
+
+        return $valid === 1;
+    }
+
     public function createForm($instance, $index)
     {
         $name = join('.', [$this->namePrefix, $this->attribute, $index]);
@@ -102,19 +116,22 @@ class ArrayField extends Field
         }, $this->forms);
     }
 
+    public function createInitialForms()
+    {
+        if (is_array($this->value)) {
+            foreach ($this->value as $key => $row) {
+                $this->forms[] = $this->createForm($row, $key);
+            }
+        }
+    }
+
     /**
      * Create nested forms
      */
     public function init()
     {
         parent::init();
-
-        if (is_array($this->value)) {
-            foreach ($this->value as $key => $row) {
-                $this->forms[] = $this->createForm($row, $key);
-            }
-        }
-
+        $this->createInitialForms();
         $this->hiddenForm = $this->createHiddenForm();
     }
 
