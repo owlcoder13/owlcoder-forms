@@ -2,6 +2,7 @@
 
 namespace Owl\OwlForms\Validation;
 
+use mysql_xdevapi\Exception;
 use Owl\OwlForms\Form;
 
 /**
@@ -21,6 +22,11 @@ trait FieldValidation
 
     public $predefinedValidators = '';
 
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
     public function addError($errorMessage)
     {
         $this->errors[] = $errorMessage;
@@ -28,18 +34,23 @@ trait FieldValidation
 
     public function validate()
     {
-        $value = $this->getValue();
-        return $this->isValid($value);
+        return $this->isValid();
     }
 
-    public function isValid($value)
+    public function isValid()
     {
         $this->errors = [];
 
         $rules = $this->rules ?? [];
 
         foreach ($rules as $key => $one) {
-            if (is_string($key)) {
+            if (is_string($key) || is_int($key) && is_string($one)) {
+
+                if (is_int($key) && is_string($one)) {
+                    $key = $one;
+                    $one = [];
+                }
+
                 $validator = $this->getPredefinedValidator($key, $this, $one);
                 $validator->validate();
             } else if ($one instanceof \Closure) {
@@ -71,6 +82,10 @@ trait FieldValidation
                 return new RegexpValidator($field, ['pattern' => $options]);
             case 'required':
                 return new RequiredValidator($field, []);
+            case 'strip-tags':
+                return new StripTagsValidator($field, []);
         }
+
+        throw new \Exception('Validator not found');
     }
 }

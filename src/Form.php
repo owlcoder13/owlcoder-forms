@@ -15,7 +15,10 @@ class Form implements IFormEvent
     use EventTrait;
 
     public $id;
+
+    /** @var Field[] */
     public $fields = [];
+
     public $instance = null;
     public $namePrefix = '';
     public $parentForm = null;
@@ -46,6 +49,13 @@ class Form implements IFormEvent
 
         $this->registerEventsFromConfig();
 
+        foreach ($config as $key => $handler) {
+            if (StringHelper::startsWith($key, 'on')) {
+                $eventName = substr($key, 2);
+                $this->on($eventName, $handler);
+            }
+        }
+
         if (isset($config['beforeSave']) && is_callable($config['beforeSave'])) {
             $this->on('beforeSave', $config['beforeSave']);
         }
@@ -64,8 +74,8 @@ class Form implements IFormEvent
             $fieldConf['idPrefix'] = $config['idPrefix'] ?? '';
 
             $field = new $fieldClass($fieldConf, $i, $this);
-
-            $this->fields[] = $field;
+            $field->init();
+            $this->fields[$field->attribute] = $field;
         }
     }
 
@@ -121,36 +131,67 @@ class Form implements IFormEvent
 
     public function validate()
     {
+        $this->triggerEvent(self::BEFORE_VALIDATE);
+
         $valid = true;
 
         foreach ($this->fields as $field) {
             $valid = (boolean) $field->validate() & $valid;
         }
 
+        $this->triggerEvent(Form::AFTER_VALIDATE, [$this]);
+
         return $valid;
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function save()
     {
         if ( ! $this->validate()) {
             return false;
         }
 
+        /**
+         * Apply change in form to instance
+         */
+        foreach ($this->fields as $field) {
+            $field->apply();
+        }
+
+        /**
+         * Trigger before save method on each field
+         */
         foreach ($this->fields as $field) {
             $field->beforeSave();
         }
 
-        if (is_object($this->instance) && method_exists($this->instance, 'save')) {
+        $this->triggerEvent(Form::BEFORE_SAVE, [$this]);
 
-            $this->triggerEvent('beforeSave', $this);
-
-            if ( ! $this->instance->save()) {
-                throw new \Exception("Can not save form");
-            }
-        }
+        $this->saveInstance();
 
         foreach ($this->fields as $field) {
             $field->afterSave();
+        }
+
+        $this->triggerEvent(Form::AFTER_SAVE, [$this]);
+
+        foreach ($this->fields as $field) {
+            $field->afterSave();
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function saveInstance()
+    {
+        if (is_object($this->instance) && method_exists($this->instance, 'save')) {
+            return $this->instance->save();
         }
 
         return true;

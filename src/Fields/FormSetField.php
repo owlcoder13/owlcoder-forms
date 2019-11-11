@@ -13,6 +13,8 @@ class FormSetField extends Field
     public $createInstance;
     public $nestedConfig;
 
+    public $onBeforeEachSave;
+
     /** @var Form[] nested form holder */
     public $forms = [];
 
@@ -54,28 +56,30 @@ class FormSetField extends Field
         return [];
     }
 
-    public function save()
-    {
-        // all actions in nested forms
-    }
-
     /**
      * Сохраняет по спрятанному id
      */
     public function afterSave()
     {
-        foreach ($this->forms as $form) {
+//        foreach ($this->forms as $form) {
+//
+//            if (isset($this->onBeforeEachSave)) {
+//                $this->onBeforeEachSave($form);
+//            }
+//
+//            $form->save();
+//        }
+//
+//        foreach ($this->formsToDelete as $one) {
+//            $one->instance->delete();
+//        }
+    }
 
-            if (isset($this->config['beforeEachSave'])) {
-                $this->config['beforeEachSave']($form);
-            }
-
-            $form->save();
-        }
-
-        foreach ($this->formsToDelete as $one) {
-            $one->instance->delete();
-        }
+    public function getValue()
+    {
+        return array_map(function (Form $form) {
+            return $form->toArray();
+        }, $this->forms);
     }
 
     public function load($data, $files)
@@ -112,11 +116,17 @@ class FormSetField extends Field
                 continue;
             }
 
+            // if id exists
             if (isset($formData['id'])) {
                 $form = Arr::first($this->forms, function (Form $form) use ($formData) {
                     return data_get($form->instance, 'id') === (int) $formData['id'];
                 });
             } else {
+
+                /**
+                 * form is new => create new model
+                 */
+
                 $newModel = $this->createEmptyInstance();
                 $form = $this->createForm($newModel, ++$maxKeys);
                 $this->forms[] = $form;
@@ -151,11 +161,6 @@ class FormSetField extends Field
         $this->hiddenForm = $this->createHiddenForm();
     }
 
-    public function getValue()
-    {
-        return null;
-    }
-
     public function js()
     {
         return Form::removeScriptTag(view('forms::formset-field-js', [
@@ -168,5 +173,19 @@ class FormSetField extends Field
         return array_merge(parent::buildContext(), [
             'forms' => $this->forms
         ]);
+    }
+
+    public function toArray()
+    {
+        return [
+            $this->attribute => array_map(function (Form $childForm) {
+                return $childForm->toArray();
+            }, $this->forms)
+        ];
+    }
+
+    public function setValue($value)
+    {
+        parent::setValue($value);
     }
 }

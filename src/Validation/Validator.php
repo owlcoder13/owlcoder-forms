@@ -30,6 +30,11 @@ class Validator
 
     public function getValue()
     {
-        return $this->field->getValue();
+        return $this->field->value;
+    }
+
+    public function setValue($value)
+    {
+        $this->field->value = $value;
     }
 }

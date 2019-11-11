@@ -35,6 +35,28 @@ class Field implements IFieldEvent
 
     public $inputAttributes = ['class' => 'form-control'];
 
+    /**
+     * Fetch initial data from instance
+     */
+    public function fetchData()
+    {
+        $this->value = DataHelper::get($this->instance, $this->attribute);
+    }
+
+    /**
+     * fetch instance value and etc...
+     */
+    public function init()
+    {
+        $this->fetchData();
+
+//        $field = $this;
+//
+//        $this->form->on('beforeValidate', function ($form) use ($field) {
+//            $field->setValue($field->value);
+//        });
+    }
+
     public function __construct(array $config, &$instance, Form &$form)
     {
         $this->instance = &$instance;
@@ -60,19 +82,11 @@ class Field implements IFieldEvent
         if ($this->instance) {
             $this->value = $this->getValue();
         }
-
-        if (is_array($this->value)) {
-            throw new \Exception('Value of field can not be array: ' . print_r($this->value, true));
-        }
     }
 
     public function getValue()
     {
-        if (isset($this->config['getValue'])) {
-            return $this->config['getValue']($this);
-        } else {
-            return $this->form->instanceGetValue($this->instance, $this->attribute, $this);
-        }
+        return $this->value;
     }
 
     public function escapeAttrValue($value)
@@ -166,7 +180,7 @@ class Field implements IFieldEvent
         $this->files = $files;
 
         if ($this->dataHasValue($data, $files)) {
-            $this->setValue($this->getValueFromData($data, $files));
+            $this->value = $this->getValueFromData($data, $files);
         }
 
         $this->file = $this->getFileByKey($files, $this->attribute, null);
@@ -186,20 +200,14 @@ class Field implements IFieldEvent
         return DataHelper::get($data, $this->attribute);
     }
 
-    public function setValue($value)
-    {
-        if ($this->isChanged($value)) {
-            if (isset($this->config['setValue'])) {
-                $this->config['setValue']($this, $value);
-            } else {
-                $this->form->instanceSetValue($this->data, $this->files, $this);
-            }
-        }
-    }
-
     public function js()
     {
         return '';
+    }
+
+    public function apply()
+    {
+        DataHelper::set($this->instance, $this->attribute, $this->getValue());
     }
 
     public function beforeSave()
@@ -208,7 +216,6 @@ class Field implements IFieldEvent
     }
 
     public function afterSave()
-
     {
 
     }

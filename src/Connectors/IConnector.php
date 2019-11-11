@@ -4,9 +4,19 @@ namespace Owl\OwlForms\Connectors;
 
 interface IConnector
 {
-    public function getAttribute($form, $field, $instance, $attribute);
+    public function fieldGetAttribute($form, $field, $instance, $attribute);
 
-    public function setAttribute($form, $field, $instance, $attribute, $value);
+    public function fieldSetAttribute($form, $field, $instance, $attribute, $value);
 
-    public function save($form, $obj);
+    public function fieldSave($form, $obj);
+
+    public function beforeSave($form, $field, $instance, $attribute)
+    {
+
+    }
+
+    public function afterSave($form, $field, $instance, $attribute)
+    {
+
+    }
 }
