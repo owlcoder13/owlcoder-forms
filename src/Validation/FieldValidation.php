@@ -2,7 +2,6 @@
 
 namespace Owl\OwlForms\Validation;
 
-use mysql_xdevapi\Exception;
 use Owl\OwlForms\Form;
 
 /**

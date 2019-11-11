@@ -4,13 +4,15 @@ namespace Owl\OwlForms\Fields;
 
 class FormSetJsonField extends FormSetField
 {
-    public function getValue()
+    public function fetchData()
     {
-        return json_decode(parent::getValue(), true);
+        parent::fetchData();
+
+        $this->value = json_decode($this->value, true);
     }
 
-    public function setValue($value)
+    public function apply()
     {
-        parent::setValue(json_encode($value));
+        parent::apply(json_encode($this->getValue()));
     }
 }

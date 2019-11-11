@@ -82,6 +82,19 @@ class FormSetField extends Field
         }, $this->forms);
     }
 
+    public function init()
+    {
+        parent::init();
+
+        if (is_array($this->value)) {
+            foreach ($this->value as $key => $row) {
+                $this->forms[] = $this->createForm($row, $key);
+            }
+        }
+
+        $this->hiddenForm = $this->createHiddenForm();
+    }
+
     public function load($data, $files)
     {
         $this->formsToDelete = [];
@@ -150,15 +163,9 @@ class FormSetField extends Field
             $config['createInstance'] : null;
 
         $this->hiddenForm = $this->createHiddenForm();
-        $arr = data_get($instance, $config['attribute']);
 
-        if (is_array($arr)) {
-            foreach ($arr as $key => $row) {
-                $this->forms[] = $this->createForm($row, $key);
-            }
-        }
+//        $arr = data_get($instance, $config['attribute']);
 
-        $this->hiddenForm = $this->createHiddenForm();
     }
 
     public function js()
