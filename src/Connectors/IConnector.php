@@ -10,13 +10,7 @@ interface IConnector
 
     public function fieldSave($form, $obj);
 
-    public function beforeSave($form, $field, $instance, $attribute)
-    {
+    public function beforeSave($form, $field, $instance, $attribute);
 
-    }
-
-    public function afterSave($form, $field, $instance, $attribute)
-    {
-
-    }
+    public function afterSave($form, $field, $instance, $attribute);
 }

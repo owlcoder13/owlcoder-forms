@@ -5,15 +5,15 @@ namespace Owl\OwlForms\Fields;
 use Owl\OwlForms\Form;
 use Illuminate\Support\Arr;
 
-class FormSetField extends Field
+class FormSetField extends ArrayField
 {
-    public $path;
     public $model;
     public $formCount = 2;
     public $createInstance;
     public $nestedConfig;
 
-    public $onBeforeEachSave;
+    public $onCreateInstance;
+    public $onCreateEmptyInstance;
 
     /** @var Form[] nested form holder */
     public $forms = [];
@@ -25,54 +25,13 @@ class FormSetField extends Field
 
     public $hiddenForm = null;
 
-    public function createForm($instance, $index)
-    {
-        $name = join('.', [$this->namePrefix, $this->attribute, $index]);
-
-        $config = [
-            'namePrefix' => $name,
-        ];
-
-        if (isset($this->config['nestedConfig']) && is_array($this->config['nestedConfig'])) {
-            $config = array_merge($config, $this->config['nestedConfig']);
-        }
-
-        $newForm = new Form($config, $instance, $this->form);
-
-        return $newForm;
-    }
-
-    public function render()
-    {
-        return view('forms::' . $this->template, ['field' => $this]);
-    }
-
     public function createEmptyInstance()
     {
-        if ($this->createInstance) {
-            return call_user_func($this->createInstance, [$this]);
+        if ($this->onCreateInstance) {
+            return call_user_func($this->onCreateInstance, [$this]);
         }
 
         return [];
-    }
-
-    /**
-     * Сохраняет по спрятанному id
-     */
-    public function afterSave()
-    {
-//        foreach ($this->forms as $form) {
-//
-//            if (isset($this->onBeforeEachSave)) {
-//                $this->onBeforeEachSave($form);
-//            }
-//
-//            $form->save();
-//        }
-//
-//        foreach ($this->formsToDelete as $one) {
-//            $one->instance->delete();
-//        }
     }
 
     public function getValue()
@@ -80,19 +39,6 @@ class FormSetField extends Field
         return array_map(function (Form $form) {
             return $form->toArray();
         }, $this->forms);
-    }
-
-    public function init()
-    {
-        parent::init();
-
-        if (is_array($this->value)) {
-            foreach ($this->value as $key => $row) {
-                $this->forms[] = $this->createForm($row, $key);
-            }
-        }
-
-        $this->hiddenForm = $this->createHiddenForm();
     }
 
     public function load($data, $files)
@@ -147,25 +93,6 @@ class FormSetField extends Field
 
             $form->load($formData, $localFiles[$k] ?? null);
         }
-    }
-
-    public function createHiddenForm()
-    {
-        return $this->createForm($this->createEmptyInstance(), '__index__');
-    }
-
-    public function __construct(array $config, &$instance, Form &$form)
-    {
-        parent::__construct($config, $instance, $form);
-
-        $this->createInstance = isset($config['createInstance'])
-        && is_callable($config['createInstance']) ?
-            $config['createInstance'] : null;
-
-        $this->hiddenForm = $this->createHiddenForm();
-
-//        $arr = data_get($instance, $config['attribute']);
-
     }
 
     public function js()

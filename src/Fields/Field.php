@@ -35,28 +35,6 @@ class Field implements IFieldEvent
 
     public $inputAttributes = ['class' => 'form-control'];
 
-    /**
-     * Fetch initial data from instance
-     */
-    public function fetchData()
-    {
-        $this->value = DataHelper::get($this->instance, $this->attribute);
-    }
-
-    /**
-     * fetch instance value and etc...
-     */
-    public function init()
-    {
-        $this->fetchData();
-
-//        $field = $this;
-//
-//        $this->form->on('beforeValidate', function ($form) use ($field) {
-//            $field->setValue($field->value);
-//        });
-    }
-
     public function __construct(array $config, &$instance, Form &$form)
     {
         $this->instance = &$instance;
@@ -82,6 +60,28 @@ class Field implements IFieldEvent
         if ($this->instance) {
             $this->value = $this->getValue();
         }
+    }
+
+    /**
+     * Fetch initial data from instance
+     */
+    public function fetchData()
+    {
+        $this->value = DataHelper::get($this->instance, $this->attribute);
+    }
+
+    /**
+     * fetch instance value and etc...
+     */
+    public function init()
+    {
+        $this->fetchData();
+
+//        $field = $this;
+//
+//        $this->form->on('beforeValidate', function ($form) use ($field) {
+//            $field->setValue($field->value);
+//        });
     }
 
     public function getValue()
@@ -212,7 +212,7 @@ class Field implements IFieldEvent
 
     public function beforeSave()
     {
-
+        $this->apply();
     }
 
     public function afterSave()

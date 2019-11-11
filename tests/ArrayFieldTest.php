@@ -1,6 +1,6 @@
 <?php
 
-class FormSetFieldTest extends \Tests\TestCase
+class ArrayFieldTest extends \Tests\TestCase
 {
     public function testData()
     {
@@ -18,7 +18,7 @@ class FormSetFieldTest extends \Tests\TestCase
             'fields' => [
                 [
                     'attribute' => 'content',
-                    'class' => \Owl\OwlForms\Fields\FormSetField::class,
+                    'class' => \Owl\OwlForms\Fields\ArrayField::class,
                     'nestedConfig' => [
                         'fields' => [
                             ['attribute' => 'title'],

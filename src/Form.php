@@ -190,8 +190,11 @@ class Form implements IFormEvent
      */
     public function saveInstance()
     {
-        if (is_object($this->instance) && method_exists($this->instance, 'save')) {
+        if (is_object($this->instance) &&
+            method_exists($this->instance, 'save')) {
+
             return $this->instance->save();
+
         }
 
         return true;
