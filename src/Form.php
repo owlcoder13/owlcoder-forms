@@ -176,7 +176,7 @@ class Form implements IFormEvent
 
     public function js()
     {
-        return static::removeScriptTag(view('forms.form-js', ['form' => $this]));
+        return static::removeScriptTag(view('forms::form-js', ['form' => $this]));
     }
 
     public function toArray()

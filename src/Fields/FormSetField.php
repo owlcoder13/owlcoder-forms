@@ -158,7 +158,7 @@ class FormSetField extends Field
 
     public function js()
     {
-        return Form::removeScriptTag(view('forms.formset-field-js', [
+        return Form::removeScriptTag(view('forms::formset-field-js', [
             'field' => $this
         ]));
     }
