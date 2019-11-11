@@ -9,8 +9,7 @@ class FormServiceProvider extends ServiceProvider
     public function boot()
     {
         /** @var \Illuminate\View\Factory $view */
-        $view = $this->app['view'];
-        $view->addLocation(__DIR__ . '/../resources/views');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'forms');
 
         return parent::boot();
     }

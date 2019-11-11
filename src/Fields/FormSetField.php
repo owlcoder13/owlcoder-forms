@@ -19,7 +19,7 @@ class FormSetField extends Field
     /** @var Form[] will be deleted while save */
     public $formsToDelete = [];
 
-    public $template = 'forms.formset-field';
+    public $template = 'formset-field';
 
     public $hiddenForm = null;
 
@@ -38,6 +38,11 @@ class FormSetField extends Field
         $newForm = new Form($config, $instance, $this->form);
 
         return $newForm;
+    }
+
+    public function render()
+    {
+        return view('forms::' . $this->template, ['field' => $this]);
     }
 
     public function createEmptyInstance()
@@ -137,8 +142,10 @@ class FormSetField extends Field
         $this->hiddenForm = $this->createHiddenForm();
         $arr = data_get($instance, $config['attribute']);
 
-        foreach ($arr as $key => $row) {
-            $this->forms[] = $this->createForm($row, $key);
+        if (is_array($arr)) {
+            foreach ($arr as $key => $row) {
+                $this->forms[] = $this->createForm($row, $key);
+            }
         }
 
         $this->hiddenForm = $this->createHiddenForm();
