@@ -10,7 +10,7 @@ class SimpleFormTest extends \Tests\TestCase
             'content' => 'some text ',
         ];
 
-        $form = new \Owl\OwlForms\Form([
+        $form = new \Owlcoder\Forms\Form([
             'fields' => [
                 [
                     'attribute' => 'title',
@@ -23,7 +23,7 @@ class SimpleFormTest extends \Tests\TestCase
                 ],
                 [
                     'attribute' => 'content',
-                    'class' => \Owl\OwlForms\Fields\TextAreaField::class
+                    'class' => \Owlcoder\Forms\Fields\TextAreaField::class
                 ],
             ],
         ], $initialData);

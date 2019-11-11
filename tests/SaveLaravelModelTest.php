@@ -8,7 +8,7 @@ class SaveLaravelModelTest extends \Tests\TestCase
             $user = new \App\User();
             $user->name = 'test';
 
-            $model = new \Owl\OwlForms\Form([
+            $model = new \Owlcoder\Forms\Form([
                 'fields' => [
                     ['attribute' => 'email'],
                     ['attribute' => 'password']

@@ -14,11 +14,11 @@ class ArrayFieldTest extends \Tests\TestCase
         /**
          * create form
          */
-        $form = new \Owl\OwlForms\Form([
+        $form = new \Owlcoder\Forms\Form([
             'fields' => [
                 [
                     'attribute' => 'content',
-                    'class' => \Owl\OwlForms\Fields\ArrayField::class,
+                    'class' => \Owlcoder\Forms\Fields\ArrayField::class,
                     'nestedConfig' => [
                         'fields' => [
                             ['attribute' => 'title'],
