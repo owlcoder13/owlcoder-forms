@@ -188,7 +188,7 @@ class Field implements IFieldEvent
 
     public function dataHasValue($data, $file)
     {
-        return isset($data[$this->attribute]);
+        return array_key_exists($this->attribute, $data);
     }
 
     public function getValueFromData($data, $file)
