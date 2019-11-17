@@ -2,6 +2,7 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\DataHelper;
 use Owlcoder\Forms\Form;
 use Illuminate\Support\Arr;
 
@@ -20,6 +21,10 @@ class ArrayJsonField extends ArrayField
 
     public function apply()
     {
-        parent::apply(json_encode($this->getValue()));
+        DataHelper::set(
+            $this->instance,
+            $this->attribute,
+            json_encode($this->getValue())
+        );
     }
 }

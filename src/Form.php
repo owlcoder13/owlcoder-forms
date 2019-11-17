@@ -9,10 +9,12 @@ use Owlcoder\Forms\Events\FormSetFieldValueEvent;
 use Owlcoder\Forms\Events\FormSetInstanceValueEvent;
 use Owlcoder\Forms\Fields\Field;
 use Owlcoder\Common\Helpers\DataHelper;
+use Owlcoder\Forms\Traits\FormErrorsTrait;
 
 class Form implements IFormEvent
 {
     use EventTrait;
+    use FormErrorsTrait;
 
     public $id;
 
@@ -137,6 +139,9 @@ class Form implements IFormEvent
 
         foreach ($this->fields as $field) {
             $valid = (boolean) $field->validate() & $valid;
+            if ( ! $valid) {
+                $this->addError($field->attribute, $field->errors);
+            }
         }
 
         $this->triggerEvent(Form::AFTER_VALIDATE, [$this]);

@@ -29,7 +29,8 @@ class SelectField extends Field
         $out = "<select {$attributes}>";
 
         foreach ($this->options as $key => $one) {
-            $out .= "<option value='$key'>{$one}</option>";
+            $selected = $key == $this->getValue() ? 'selected' : '';
+            $out .= "<option $selected value='$key'>{$one}</option>";
         }
 
         $out .= "</select>";

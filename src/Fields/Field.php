@@ -84,6 +84,10 @@ class Field implements IFieldEvent
 //        });
     }
 
+    /**
+     * Получение текущего значения формы
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
@@ -265,5 +269,5 @@ class Field implements IFieldEvent
         $file = DataHelper::get($files, $key, $default);
         return empty($file) ? $default : $file;
     }
-    
+
 }
