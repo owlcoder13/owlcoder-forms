@@ -11,7 +11,12 @@ class SelectField extends Field
     {
         parent::__construct($config, $instance, $form);
 
-        $this->options = $config['options']($this);
+        if (is_callable($config['options'])) {
+            $this->options = $config['options']($this);
+        } else {
+            $this->options = $config['options'];
+        }
+
         $this->showEmpty = $config['showEmpty'] ?? $this->showEmpty;
     }
 
