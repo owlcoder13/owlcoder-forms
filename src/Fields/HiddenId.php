@@ -9,11 +9,12 @@ class HiddenId extends Field
 {
     public function render()
     {
-        return "<input type='hidden' name='{$this->name}' value='{$this->value}'/>";
+        return "<input type='hidden' name='{$this->name}' value='{$this->getValue()}'/>";
     }
 
-    public function load($data = [], $files = [])
+    public function apply()
     {
-
+        // id always not settable
+        // parent::apply();
     }
 }
