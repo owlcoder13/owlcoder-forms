@@ -4,17 +4,19 @@ namespace Owlcoder\Forms\Fields;
 
 class SelectField extends Field
 {
-    public $options;
+    public $options = [];
     public $showEmpty = true;
 
     public function __construct($config, &$instance, &$form)
     {
         parent::__construct($config, $instance, $form);
 
-        if (is_callable($config['options'])) {
-            $this->options = $config['options']($this);
-        } else {
-            $this->options = $config['options'];
+        if(isset($config['options'])){
+            if (is_callable($config['options'])) {
+                $this->options = $config['options']($this);
+            } else {
+                $this->options = $config['options'];
+            }
         }
 
         $this->showEmpty = $config['showEmpty'] ?? $this->showEmpty;

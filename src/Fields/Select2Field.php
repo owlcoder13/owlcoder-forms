@@ -4,12 +4,8 @@ namespace Owlcoder\Forms\Fields;
 
 class Select2Field extends SelectField
 {
-    public $template = 'forms.select';
-
-    public function buildContext()
+    public function js()
     {
-        return array_merge(parent::buildContext(), [
-            'options' => $this->options,
-        ]);
+        return '$(el).select2();';
     }
 }
