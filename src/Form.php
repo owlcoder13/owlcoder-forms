@@ -4,6 +4,7 @@ namespace Owlcoder\Forms;
 
 use Owlcoder\Common\EventTrait;
 use Owlcoder\Common\Helpers\StringHelper;
+use Owlcoder\Common\Helpers\ViewHelper;
 use Owlcoder\Forms\Connectors\ArrayConnector;
 use Owlcoder\Forms\Events\FormSetFieldValueEvent;
 use Owlcoder\Forms\Events\FormSetInstanceValueEvent;
@@ -225,7 +226,8 @@ class Form implements IFormEvent
 
     public function js()
     {
-        return static::removeScriptTag(view('forms::form-js', ['form' => $this]));
+        $render = ViewHelper::Render(__DIR__ . '/../resources/views/form-js.php', ['form' => $this]);
+        return static::removeScriptTag($render);
     }
 
     public function toArray()

@@ -8,6 +8,7 @@ class Validator
 {
     /** @var Field */
     public $field;
+    public $if;
 
     public function __construct($field, $options = [])
     {
@@ -16,6 +17,23 @@ class Validator
         foreach ($options as $key => $value) {
             $this->$key = $value;
         }
+    }
+
+    /**
+     * Если не задано условие if то вызывается валидация
+     * Если задано - сначала идёт проверка - можно ли вызывать валидатор
+     */
+    public function makeValidation()
+    {
+        $if = $this->if;
+        if ($this->if != null && is_callable($if)) {
+            if ($if($this->field->form, $this->field)) {
+                $this->validate();
+            }
+        } else {
+            $this->validate();
+        }
+
     }
 
     public function validate()

@@ -51,7 +51,7 @@ trait FieldValidation
                 }
 
                 $validator = $this->getPredefinedValidator($key, $this, $one);
-                $validator->validate();
+                $validator->makeValidation();
             } else if ($one instanceof \Closure) {
                 $one($this);
             } else if (is_array($one)) {
@@ -59,7 +59,7 @@ trait FieldValidation
 
                 /** @var Validator $validator */
                 $validator = new $validatorClass($this, $one);
-                $validator->validate();
+                $validator->makeValidation();
             }
         }
 
@@ -74,17 +74,17 @@ trait FieldValidation
     {
         switch ($validator) {
             case 'max':
-                return new MaxLengthValidator($field, ['value' => $options]);
+                return new MaxLengthValidator($field, $options);
             case 'min':
-                return new MinLengthValidator($field, ['value' => $options]);
+                return new MinLengthValidator($field, $options);
             case 'reg':
-                return new RegexpValidator($field, ['pattern' => $options]);
+                return new RegexpValidator($field, $options);
             case 'required':
-                return new RequiredValidator($field, []);
+                return new RequiredValidator($field, $options);
             case 'strip-tags':
-                return new StripTagsValidator($field, []);
+                return new StripTagsValidator($field, $options);
             case 'number':
-                return new NumberValidator($field, []);
+                return new NumberValidator($field, $options);
         }
 
         throw new \Exception('Validator not found');

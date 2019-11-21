@@ -1,5 +1,5 @@
 <script>
-    // form js
+    // ====== form js ======
     $(document).ready(function () {
         <?php foreach($form->fields as $field){?>
         (function (el) {
