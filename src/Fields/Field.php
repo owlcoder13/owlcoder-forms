@@ -93,13 +93,19 @@ class Field implements IFieldEvent
         return $this->value;
     }
 
+    /**
+     * Use for rendering attributes with single quote
+     * @param $value
+     * @return false|string
+     */
     public function escapeAttrValue($value)
     {
         return mb_ereg_replace("'", "\\'", $value);
     }
 
     /**
-     * @return []
+     * Build html attributes to string from associative array
+     * @return string
      */
     public function buildInputAttributes($additionalAttributes = [])
     {
