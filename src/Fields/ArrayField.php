@@ -2,6 +2,7 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\ViewHelper;
 use Owlcoder\Forms\Form;
 use Illuminate\Support\Arr;
 
@@ -71,7 +72,9 @@ class ArrayField extends Field
      */
     public function render()
     {
-        return view('forms::' . $this->template, ['field' => $this]);
+        return ViewHelper::Render(__DIR__ . '/../../resources/views/array-field.php', [
+            'field' => $this,
+        ]);
     }
 
     /**
