@@ -32,6 +32,10 @@ class ArrayField extends Field
     {
         parent::__construct($config, $instance, $form);
 
+        if ( ! isset($config['nestedConfig'])) {
+            throw new \Exception('Array field must have nestedConfig attribute');
+        }
+
         $this->hiddenForm = $this->createHiddenForm();
     }
 
@@ -186,9 +190,10 @@ class ArrayField extends Field
      */
     public function js()
     {
-        return Form::removeScriptTag(view('forms::formset-field-js', [
-            'field' => $this
-        ]));
+        return Form::removeScriptTag(
+            ViewHelper::Render(__DIR__ . '/../../resources/views/array-field-js.php',
+                ['field' => $this])
+        );
     }
 
     /**
