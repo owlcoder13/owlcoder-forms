@@ -1,7 +1,7 @@
 <script>
     <?php foreach($field->forms as $form){ ?>
         (function (el) {
-            {!! $form->js() !!}
+            <?=$form->js()?>
         })($('#<?=$form->id?>'));
     <?php } ?>
 
