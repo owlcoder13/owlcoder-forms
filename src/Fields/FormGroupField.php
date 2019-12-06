@@ -2,6 +2,7 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\DataHelper;
 use Owlcoder\Common\Helpers\ViewHelper;
 use Owlcoder\Forms\Form;
 use Illuminate\Support\Arr;
@@ -28,7 +29,13 @@ class FormGroupField extends Field
     {
         parent::init();
 
-        $this->form = new Form($this->nestedConfig, $this->value);
+        $config = $this->nestedConfig;
+
+        // create name prefix
+        $name = join('.', [$this->namePrefix, $this->attribute]);
+        $config['namePrefix'] = $name;
+
+        $this->form = new Form($config, $this->value);
     }
 
     public function getValue()
@@ -51,5 +58,24 @@ class FormGroupField extends Field
             ViewHelper::Render($template,
                 ['field' => $this])
         );
+    }
+
+    /**
+     * Reset our forms and create new ones
+     *
+     * @param $data
+     * @param $files
+     */
+    public function load($data, $files)
+    {
+        $this->forms = [];
+
+        $this->data = $data;
+        $this->files = $files;
+
+        $localData = DataHelper::get($data, $this->attribute);
+        $localFiles = DataHelper::get($files, $this->attribute);
+
+        $this->form->load($localData, $localFiles ?? null);
     }
 }

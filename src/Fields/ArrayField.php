@@ -5,6 +5,7 @@ namespace Owlcoder\Forms\Fields;
 use Owlcoder\Common\Helpers\ViewHelper;
 use Owlcoder\Forms\Form;
 use Illuminate\Support\Arr;
+use Owlcoder\Common\Helpers\DataHelper;
 
 class ArrayField extends Field
 {
@@ -155,8 +156,8 @@ class ArrayField extends Field
         $this->data = $data;
         $this->files = $files;
 
-        $localData = data_get($data, $this->attribute);
-        $localFiles = data_get($files, $this->attribute);
+        $localData = DataHelper::get($data, $this->attribute);
+        $localFiles = DataHelper::get($files, $this->attribute);
 
         foreach ($localData as $k => $formData) {
 
