@@ -78,12 +78,6 @@ class Field implements IFieldEvent
     public function init()
     {
         $this->fetchData();
-
-//        $field = $this;
-//
-//        $this->form->on('beforeValidate', function ($form) use ($field) {
-//            $field->setValue($field->value);
-//        });
     }
 
     /**

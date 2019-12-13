@@ -4,13 +4,15 @@ namespace Owlcoder\Forms\Fields;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
+use Owlcoder\Common\Helpers\ArrayHelper;
+use Owlcoder\Common\Helpers\DataHelper;
+use Owlcoder\Common\Helpers\ViewHelper;
 
 class ManyToManyCheckboxListField extends Field
 {
     public $options;
     public $relatedModelField;
-
-    public $template = 'forms.checkbox-list';
+    public $oldData;
 
     public function __construct($config, $instance, $form = null)
     {
@@ -23,6 +25,21 @@ class ManyToManyCheckboxListField extends Field
 
         return $this;
     }
+
+    public function fetchData()
+    {
+        parent::fetchData();
+
+        $data = DataHelper::get($this->instance, $this->attribute, []);
+        $this->value = ArrayHelper::getColumn($data, $this->relatedModelField);
+        $this->oldData = $this->value;
+    }
+
+    public function renderInput()
+    {
+        return ViewHelper::Render(__DIR__ . '/../../resources/views/checkbox-list.php', $this->buildContext());
+    }
+
 
     public function getInitialValue()
     {
@@ -71,9 +88,15 @@ class ManyToManyCheckboxListField extends Field
         $this->files = $files;
     }
 
+    // do not apply to model
+    public function apply()
+    {
+
+    }
+
     public function afterSave()
     {
-        $models = data_get($this->instance, $this->attribute);
+        $oldData = data_get($this->instance, $this->attribute);
 
         $key = $this->getFkToLocal();
 
@@ -82,7 +105,7 @@ class ManyToManyCheckboxListField extends Field
         $data = $this->getValueFromData($this->data, $this->files);
 
         foreach ($data as $id) {
-            $tmp = Arr::first($models, function ($item) use ($id, $key) {
+            $tmp = ArrayHelper::first($oldData, function ($item) use ($id, $key) {
                 return $item->$key == $id;
             });
 
@@ -100,7 +123,7 @@ class ManyToManyCheckboxListField extends Field
             $not_to_delete[] = $tmp->id;
         }
 
-        foreach ($models as $one) {
+        foreach ($oldData as $one) {
             if ( ! in_array($one->id, $not_to_delete)) {
                 $one->delete();
             }

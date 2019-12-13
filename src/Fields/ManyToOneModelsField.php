@@ -81,7 +81,7 @@ class ManyToOneModelsField extends Field
 
         $name = join('.', [$this->namePrefix, $this->attribute, $index]);
 
-        $newForm = Form::Build([
+        $newForm = new Form([
             'fields' => $this->config['fields'],
             'namePrefix' => $name,
         ], $instance, $this->form);

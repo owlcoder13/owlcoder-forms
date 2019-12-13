@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Forms;
+namespace Owlcoder\Forms;
 
 use Illuminate\Validation\ValidationException;
 
 /**
  * Trait FieldValidation
- * @package App\Forms
+ * @package Owlcoder\Forms
  *
  * @property Form $form
  * @property $instance
