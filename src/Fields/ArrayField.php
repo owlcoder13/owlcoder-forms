@@ -159,21 +159,26 @@ class ArrayField extends Field
         $localData = DataHelper::get($data, $this->attribute);
         $localFiles = DataHelper::get($files, $this->attribute);
 
-        foreach ($localData as $k => $formData) {
+        if (is_array($localData)) {
+            foreach ($localData as $k => $formData) {
 
-            /**
-             * We don't want to save hidden form. Ignore it
-             */
-            if ($k === '__index__') {
-                continue;
+                /**
+                 * We don't want to save hidden form. Ignore it
+                 */
+                if ($k === '__index__') {
+                    continue;
+                }
+
+                $newModel = $this->createEmptyInstance();
+                $form = $this->createForm($newModel, $k);
+                $this->forms[] = $form;
+
+                $form->load($formData, $localFiles[$k] ?? null);
             }
-
-            $newModel = $this->createEmptyInstance();
-            $form = $this->createForm($newModel, $k);
-            $this->forms[] = $form;
-
-            $form->load($formData, $localFiles[$k] ?? null);
+            return true;
         }
+
+        return false;
     }
 
     /**

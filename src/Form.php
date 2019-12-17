@@ -118,7 +118,7 @@ class Form implements IFormEvent
 
     public function load($data = [], $files = [])
     {
-        if (count($data) == 0 && count($files) == 0) {
+        if ( ! (is_array($data) && count($data) != 0) && ! (is_array($files) && count($files) != 0)) {
             return false;
         }
 
@@ -134,7 +134,7 @@ class Form implements IFormEvent
 
     public function validate()
     {
-        $this->triggerEvent(self::BEFORE_VALIDATE);
+        $this->triggerEvent(self::BEFORE_VALIDATE, $this);
 
         $valid = true;
 
@@ -145,7 +145,7 @@ class Form implements IFormEvent
             }
         }
 
-        $this->triggerEvent(Form::AFTER_VALIDATE, [$this]);
+        $this->triggerEvent(Form::AFTER_VALIDATE, $this);
 
         return $valid;
     }
@@ -174,7 +174,7 @@ class Form implements IFormEvent
             $field->beforeSave();
         }
 
-        $this->triggerEvent(Form::BEFORE_SAVE, [$this]);
+        $this->triggerEvent(Form::BEFORE_SAVE, $this);
 
         $this->saveInstance();
 
@@ -182,7 +182,7 @@ class Form implements IFormEvent
             $field->afterSave();
         }
 
-        $this->triggerEvent(Form::AFTER_SAVE, [$this]);
+        $this->triggerEvent(Form::AFTER_SAVE, $this);
 
         foreach ($this->fields as $field) {
             $field->afterSave();
