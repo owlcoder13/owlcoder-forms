@@ -17,6 +17,7 @@ class Field implements IFieldEvent
     public $instance;
     public $attribute;
     public $idPrefix = '';
+    public $type = 'text';
 
     public $data;
     public $files;
@@ -237,9 +238,10 @@ class Field implements IFieldEvent
     {
         $attributes = $this->buildInputAttributes([
             'value' => $this->escapeAttrValue($this->getValue()),
+            'type' => $this->type,
         ]);
 
-        return "<input {$attributes} type='text' value='{$this->value}'/>";
+        return "<input {$attributes} value='{$this->value}'/>";
     }
 
     public function renderLabel()
