@@ -8,6 +8,7 @@ use Owlcoder\Forms\Form;
 use Owlcoder\Forms\IFieldEvent;
 
 use Owlcoder\Common\Helpers\DataHelper;
+use stringEncode\Exception;
 
 class Field implements IFieldEvent
 {
@@ -97,6 +98,9 @@ class Field implements IFieldEvent
      */
     public function escapeAttrValue($value)
     {
+        if ( ! is_string($value) && ! empty($value)) {
+            throw new Exception('Can not escape ' . print_r($value, true));
+        }
         return mb_ereg_replace("'", "\\'", $value);
     }
 
