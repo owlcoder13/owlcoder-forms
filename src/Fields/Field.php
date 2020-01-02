@@ -98,8 +98,8 @@ class Field implements IFieldEvent
      */
     public function escapeAttrValue($value)
     {
-        if ( ! is_string($value) && ! empty($value)) {
-            throw new Exception('Can not escape ' . print_r($value, true));
+        if ( ! is_string($value) && ! is_numeric($value) && ! empty($value)) {
+            throw new \Exception('Can not escape ' . print_r($value, true));
         }
         return mb_ereg_replace("'", "\\'", $value);
     }
