@@ -23,7 +23,7 @@ class ManyToOneModelsField extends ArrayField
     {
         $attr = $this->attribute;
         $value = $this->instance->$attr;
-        $this->value = $value->toArray();
+        $this->value = iterator_to_array($value);
     }
 
     public function toArray()
@@ -42,9 +42,9 @@ class ManyToOneModelsField extends ArrayField
         $fkField = $this->fkField;
 
         foreach ($this->forms as $form) {
-            $form->instance->$fkField = $this->instance->id;
+            $form->instance[$fkField] = $this->instance->id;
             $form->save();
-            $id = $form->instance->id;
+            $id = $form->instance['id'];
 
             $oldData = $oldData->reject(function ($item) use ($id) {
                 return $item['id'] == $id;
@@ -64,8 +64,6 @@ class ManyToOneModelsField extends ArrayField
 
     public function load($data, $files)
     {
-        $this->forms = [];
-
         $this->data = $data;
         $this->files = $files;
 
