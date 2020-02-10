@@ -37,8 +37,6 @@ class Field implements IFieldEvent
 
     public $inputAttributes = ['class' => 'form-control'];
 
-    public $apply = true;
-
     public function __construct(array $config, &$instance, Form &$form)
     {
         $this->instance = &$instance;
@@ -218,7 +216,9 @@ class Field implements IFieldEvent
 
     public function apply()
     {
-        if ($this->apply) {
+        if (isset($this->config['apply'])) {
+            $this->config['apply']($this);
+        } else {
             DataHelper::set($this->instance, $this->attribute, $this->getValue());
         }
     }
