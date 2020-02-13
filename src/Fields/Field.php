@@ -69,7 +69,11 @@ class Field implements IFieldEvent
      */
     public function fetchData()
     {
-        $this->value = DataHelper::get($this->instance, $this->attribute);
+        if (isset($this->config['fetchData']) && is_callable($this->config['fetchData'])) {
+            $this->config['fetchData']($this);
+        } else {
+            $this->value = DataHelper::get($this->instance, $this->attribute);
+        }
     }
 
     /**
