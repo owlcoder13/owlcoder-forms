@@ -184,10 +184,6 @@ class Form implements IFormEvent
 
         $this->triggerEvent(Form::AFTER_SAVE, $this);
 
-        foreach ($this->fields as $field) {
-            $field->afterSave();
-        }
-
         return true;
     }
 

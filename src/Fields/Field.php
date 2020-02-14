@@ -234,7 +234,9 @@ class Field implements IFieldEvent
 
     public function afterSave()
     {
-
+        if (isset($this->config['afterSave'])) {
+            $this->config['afterSave']($this);
+        }
     }
 
     public function toArray()
