@@ -13,6 +13,7 @@ class ManyToOneModelsField extends ArrayField
 
     public $modelClassName;
     public $fkField;
+    public $formsToDelete = [];
 
     public function createEmptyInstance()
     {
@@ -40,18 +41,14 @@ class ManyToOneModelsField extends ArrayField
     {
         $oldData = new Collection($this->value);
         $fkField = $this->fkField;
-        $notDeleteIds = [];
 
         foreach ($this->forms as $form) {
             $form->instance[$fkField] = $this->instance->id;
             $form->save();
-            $notDeleteIds[] = DataHelper::get($form->instance, 'id');
         }
 
-        foreach ($oldData as $one) {
-            if ( ! in_array($one->id, $notDeleteIds)) {
-                $one->delete();
-            }
+        foreach ($this->formsToDelete as $one) {
+            $one->instance->delete();
         }
 
         parent::afterSave();
@@ -65,32 +62,41 @@ class ManyToOneModelsField extends ArrayField
         $localData = DataHelper::get($data, $this->attribute);
         $localFiles = DataHelper::get($files, $this->attribute);
 
+        $forms = $this->forms;
+        $newForms = [];
+
         if (is_array($localData)) {
             foreach ($localData as $k => $formData) {
 
                 $form = null;
 
                 if ( ! empty($formData['id'])) {
-                    $form = $this->searchForm($formData['id']);
+                    $form = $this->searchForm($formData['id'], $forms);
                 }
 
                 if ($form == null) {
                     $form = $this->createForm($this->createEmptyInstance(), $k);
                 }
 
+                $newForms[] = $form;
+
                 $form->load($formData, $localFiles[$k] ?? null);
-                $this->forms[] = $form;
             }
+
+            $this->forms = $newForms;
+            $this->formsToDelete = $forms;
+
             return true;
         }
 
         return false;
     }
 
-    public function searchForm($id)
+    public function searchForm($id, &$forms)
     {
-        foreach ($this->forms as $form) {
+        foreach ($forms as $key => $form) {
             if ($form->instance['id'] == $id) {
+                unset($forms[$key]);
                 return $form;
             }
         }
