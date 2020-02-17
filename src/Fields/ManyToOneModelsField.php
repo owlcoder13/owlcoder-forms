@@ -40,22 +40,17 @@ class ManyToOneModelsField extends ArrayField
     {
         $oldData = new Collection($this->value);
         $fkField = $this->fkField;
+        $notDeleteIds = [];
 
         foreach ($this->forms as $form) {
             $form->instance[$fkField] = $this->instance->id;
             $form->save();
-            $id = $form->instance['id'];
-
-            $oldData = $oldData->reject(function ($item) use ($id) {
-                return $item['id'] == $id;
-            });
+            $notDeleteIds[] = DataHelper::get($form->instance, 'id');
         }
 
         foreach ($oldData as $one) {
-            $modelClass = $this->modelClassName;
-            $m = $modelClass::find($one['id']);
-            if ($m != null) {
-                $m->delete();
+            if ( ! in_array($one->id, $notDeleteIds)) {
+                $one->delete();
             }
         }
 
