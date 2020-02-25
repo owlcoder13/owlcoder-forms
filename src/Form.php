@@ -43,7 +43,6 @@ class Form implements IFormEvent
     {
         $this->id = $config['id'] ?? 'form_' . self::$formCounter++;
 
-        $this->fields = [];
         $this->instance = &$instance ?? [];
         $this->namePrefix = $config['namePrefix'] ?? '';
         $this->parentForm = $parentForm;
@@ -67,7 +66,8 @@ class Form implements IFormEvent
         $i = &$this->instance;
 
         // create form fields
-        foreach ($config['fields'] as $key => $value) {
+        $config['fields'] = $config['fields'] ?? [];
+        foreach (array_merge($this->getFields(), $config['fields']) as $key => $value) {
 
             $fieldConf = Field::normalizeFormConfig($key, $value);
             $fieldClass = $fieldConf['class'];
@@ -286,6 +286,15 @@ class Form implements IFormEvent
             $value = DataHelper::get($event->data, $event->attribute);
             DataHelper::set($field->instance, $field->attribute, $value);
         }
+    }
+
+    /**
+     * Возвращает поля текущей формы
+     * @return array
+     */
+    public function getFields()
+    {
+        return [];
     }
 
 }
