@@ -72,7 +72,7 @@ class Field implements IFieldEvent
         if (isset($this->config['fetchData']) && is_callable($this->config['fetchData'])) {
             $this->config['fetchData']($this);
         } else {
-            $this->value = DataHelper::get($this->instance, $this->attribute);
+            $this->form->fetchAttributeData($this);
         }
     }
 
@@ -103,7 +103,7 @@ class Field implements IFieldEvent
         if ( ! is_string($value) && ! is_numeric($value) && ! empty($value)) {
             throw new \Exception("Can not escape field $this->attribute: " . print_r($value, true));
         }
-        return mb_ereg_replace("'", "\\'", $value);
+        return htmlspecialchars($value);
     }
 
     /**
@@ -121,7 +121,7 @@ class Field implements IFieldEvent
 
         foreach ($allAttributes as $key => $value) {
             $value = $this->escapeAttrValue($value);
-            $out[] = "$key='$value'";
+            $out[] = $key . '=' . '"' . $value . '"';
         }
 
         return join(' ', $out);
@@ -223,7 +223,7 @@ class Field implements IFieldEvent
         if (isset($this->config['apply'])) {
             $this->config['apply']($this);
         } else {
-            DataHelper::set($this->instance, $this->attribute, $this->getValue());
+            $this->form->applyAttributeData($this);
         }
     }
 

@@ -122,6 +122,10 @@ class Form implements IFormEvent
             return false;
         }
 
+        if ($this->namePrefix) {
+            $data = $data[$this->namePrefix] ?? [];
+        }
+
         $this->data = $data;
         $this->files = $files;
 
@@ -297,4 +301,21 @@ class Form implements IFormEvent
         return [];
     }
 
+    public function fetchAttributeData(Field $field)
+    {
+        if (isset($this->config['fetchAttributeData'])) {
+            $this->config['fetchAttributeData']($field);
+        } else {
+            $field->value = DataHelper::get($field->instance, $field->attribute);
+        }
+    }
+
+    public function applyAttributeData($field)
+    {
+        if (isset($this->config['applyAttributeData'])) {
+            $this->config['applyAttributeData']($field);
+        } else {
+            $field->value = DataHelper::set($field->instance, $field->attribute, $field->value);
+        }
+    }
 }
