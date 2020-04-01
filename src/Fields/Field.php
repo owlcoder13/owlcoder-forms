@@ -106,6 +106,11 @@ class Field implements IFieldEvent
         return htmlspecialchars($value);
     }
 
+    public function getEscapedValue()
+    {
+        return $this->escapeAttrValue($this->value);
+    }
+
     /**
      * Build html attributes to string from associative array
      * @return string

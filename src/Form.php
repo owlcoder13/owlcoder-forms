@@ -47,7 +47,7 @@ class Form implements IFormEvent
         $this->namePrefix = $config['namePrefix'] ?? '';
         $this->parentForm = $parentForm;
         $this->config = $config;
-        $this->rules = $config['rules'] ?? [];
+        $this->rules = array_merge($this->rules(), $config['rules'] ?? []);
 
         $this->registerEventsFromConfig();
 
@@ -80,6 +80,27 @@ class Form implements IFormEvent
             $field->init();
             $this->fields[$field->attribute] = $field;
         }
+
+        $this->initRules();
+    }
+
+    public function initRules()
+    {
+        foreach ($this->rules as $one) {
+            $fields = $one[0];
+            $validator = $one[1];
+
+            foreach ($fields as $field) {
+                if ( ! empty($this->fields[$field])) {
+                    $this->fields[$field]->rules[] = $validator;
+                }
+            }
+        }
+    }
+
+    public function rules()
+    {
+        return [];
     }
 
     public function render()
@@ -180,7 +201,10 @@ class Form implements IFormEvent
 
         $this->triggerEvent(Form::BEFORE_SAVE, $this);
 
-        $this->saveInstance();
+        $s = $this->saveInstance();
+        if ( ! $s) {
+            return $s;
+        }
 
         foreach ($this->fields as $field) {
             $field->afterSave();
@@ -315,7 +339,7 @@ class Form implements IFormEvent
         if (isset($this->config['applyAttributeData'])) {
             $this->config['applyAttributeData']($field);
         } else {
-            $field->value = DataHelper::set($field->instance, $field->attribute, $field->value);
+            DataHelper::set($field->instance, $field->attribute, $field->value);
         }
     }
 }
