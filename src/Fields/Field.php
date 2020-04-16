@@ -226,7 +226,15 @@ class Field implements IFieldEvent
     public function apply()
     {
         if (isset($this->config['apply'])) {
-            $this->config['apply']($this);
+
+            if ($this->config['apply'] === false) {
+                return;
+            }
+
+            if (is_callable($this->config['apply'])) {
+                $this->config['apply']($this);
+            }
+
         } else {
             $this->form->applyAttributeData($this);
         }
