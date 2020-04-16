@@ -269,7 +269,7 @@ class Field implements IFieldEvent
 
     public function renderLabel()
     {
-        return "<label for='{$this->id}'>{$this->label}</label><br>";
+        return "<label for='{$this->id}'>{$this->label}</label>";
     }
 
     public function renderErrors()
