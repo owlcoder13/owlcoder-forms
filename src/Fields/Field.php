@@ -234,7 +234,7 @@ class Field implements IFieldEvent
 
     public function beforeSave()
     {
-        $this->apply();
+        
     }
 
     public function afterSave()

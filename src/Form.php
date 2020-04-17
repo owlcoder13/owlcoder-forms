@@ -144,7 +144,7 @@ class Form implements IFormEvent
         }
 
         if ($this->namePrefix) {
-            $data = $data[$this->namePrefix] ?? [];
+            $data = DataHelper::get($data, $this->namePrefix, []);
         }
 
         $this->data = $data;

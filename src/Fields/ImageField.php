@@ -51,11 +51,6 @@ class ImageField extends FileField
         parent::afterSave();
 
         if ($this->file) {
-
-//            if ( ! is_dir($this->directory)) {
-//                mkdir($this->directory, 777, true);
-//            }
-
             $this->file->move($this->directory, $this->file->getClientOriginalName());
         }
     }
