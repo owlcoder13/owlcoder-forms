@@ -54,6 +54,8 @@ trait FieldValidation
                 $validator->makeValidation();
             } else if ($one instanceof \Closure) {
                 $one($this);
+            } else if (is_callable($one)) {
+                call_user_func($one, $this, $this->value);
             } else if (is_array($one)) {
                 $validatorClass = array_shift($one['class']);
 

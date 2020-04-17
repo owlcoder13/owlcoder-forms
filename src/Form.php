@@ -11,11 +11,12 @@ use Owlcoder\Forms\Events\FormSetInstanceValueEvent;
 use Owlcoder\Forms\Fields\Field;
 use Owlcoder\Common\Helpers\DataHelper;
 use Owlcoder\Forms\Traits\FormErrorsTrait;
+use Owlcoder\Forms\Validation\FormValidation;
 
 class Form implements IFormEvent
 {
     use EventTrait;
-    use FormErrorsTrait;
+    use FormValidation;
 
     public $id;
 
@@ -32,10 +33,6 @@ class Form implements IFormEvent
 
     public static $defaultConnector = ArrayConnector::class;
 
-    /**
-     * @var array
-     */
-    public $rules = [];
 
     public static $formCounter = 0;
 
@@ -82,25 +79,6 @@ class Form implements IFormEvent
         }
 
         $this->initRules();
-    }
-
-    public function initRules()
-    {
-        foreach ($this->rules as $one) {
-            $fields = $one[0];
-            $validator = $one[1];
-
-            foreach ($fields as $field) {
-                if ( ! empty($this->fields[$field])) {
-                    $this->fields[$field]->rules[] = $validator;
-                }
-            }
-        }
-    }
-
-    public function rules()
-    {
-        return [];
     }
 
     public function render()
@@ -157,24 +135,6 @@ class Form implements IFormEvent
         return true;
     }
 
-    public function validate()
-    {
-        $this->triggerEvent(self::BEFORE_VALIDATE, $this);
-
-        $valid = true;
-
-        foreach ($this->fields as $field) {
-            $valid = (boolean) $field->validate() & $valid;
-            if ( ! $valid) {
-                $this->addError($field->attribute, $field->errors);
-            }
-        }
-
-        $this->triggerEvent(Form::AFTER_VALIDATE, $this);
-
-        return $valid;
-    }
-
     /**
      * @return bool
      * @throws \Exception
@@ -185,23 +145,22 @@ class Form implements IFormEvent
             return false;
         }
 
-        /**
-         * Apply change in form to instance
-         */
-        foreach ($this->fields as $field) {
-            $field->apply();
-        }
+        // apply data to model
+        $this->apply();
 
-        /**
-         * Trigger before save method on each field
-         */
+        // each field before save
         foreach ($this->fields as $field) {
             $field->beforeSave();
         }
 
-        $this->triggerEvent(Form::BEFORE_SAVE, $this);
+        // form before save
+        if ( ! $this->beforeSave()) {
+            return false;
+        }
 
+        // save instance
         $s = $this->saveInstance();
+
         if ( ! $s) {
             return $s;
         }
@@ -210,9 +169,28 @@ class Form implements IFormEvent
             $field->afterSave();
         }
 
-        $this->triggerEvent(Form::AFTER_SAVE, $this);
+        $this->afterSave();
+
 
         return true;
+    }
+
+    public function apply()
+    {
+        foreach ($this->fields as $field) {
+            $field->apply();
+        }
+    }
+
+    public function beforeSave()
+    {
+        $this->triggerEvent(Form::BEFORE_SAVE, $this);
+        return true;
+    }
+
+    public function afterSave()
+    {
+        $this->triggerEvent(Form::AFTER_SAVE, $this);
     }
 
     /**
