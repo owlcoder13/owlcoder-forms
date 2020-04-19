@@ -34,6 +34,7 @@ class Field implements IFieldEvent
 
     public $namePrefix = '';
     public $id;
+    public $canApply = true;
 
     public $inputAttributes = ['class' => 'form-control'];
 
@@ -225,24 +226,26 @@ class Field implements IFieldEvent
 
     public function apply()
     {
-        if (isset($this->config['apply'])) {
+        if ($this->canApply) {
+            if (isset($this->config['apply'])) {
 
-            if ($this->config['apply'] === false) {
-                return;
+                if ($this->config['apply'] === false) {
+                    return;
+                }
+
+                if (is_callable($this->config['apply'])) {
+                    $this->config['apply']($this);
+                }
+
+            } else {
+                $this->form->applyAttributeData($this);
             }
-
-            if (is_callable($this->config['apply'])) {
-                $this->config['apply']($this);
-            }
-
-        } else {
-            $this->form->applyAttributeData($this);
         }
     }
 
     public function beforeSave()
     {
-        
+
     }
 
     public function afterSave()

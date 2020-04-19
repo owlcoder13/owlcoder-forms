@@ -2,7 +2,7 @@
 
 class ArrayFieldTest extends \Tests\TestCase
 {
-    public function testData()
+    public function _testData()
     {
         /**
          * set initial data for testing
@@ -52,7 +52,6 @@ class ArrayFieldTest extends \Tests\TestCase
 
         $this->assertTrue(count($result['content']) == 2);
 
-
         /**
          * apply changes to initial data
          */
@@ -63,5 +62,29 @@ class ArrayFieldTest extends \Tests\TestCase
          */
         $this->assertTrue(is_array($initialData));
         $this->assertTrue(count($initialData['content']) == 2);
+    }
+
+    public function testWithPrefix()
+    {
+        require_once __DIR__ . '/forms/PrefixArrayTestForm.php';
+
+        $data = [
+            'items' => [
+                ['id' => 2],
+                ['id' => 6]
+            ],
+        ];
+
+        $form = new PrefixArrayTestForm([], $data);
+
+        $form->load([
+            'form_1' => [
+                'items' => [
+                    ['id' => 1],
+                ],
+            ]
+        ]);
+
+        $form->save();
     }
 }

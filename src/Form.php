@@ -41,7 +41,11 @@ class Form implements IFormEvent
         $this->id = $config['id'] ?? 'form_' . self::$formCounter++;
 
         $this->instance = &$instance ?? [];
-        $this->namePrefix = $config['namePrefix'] ?? '';
+
+        if ( ! empty($config['namePrefix'])) {
+            $this->namePrefix = $config['namePrefix'];
+        }
+
         $this->parentForm = $parentForm;
         $this->config = $config;
         $this->rules = array_merge($this->rules(), $config['rules'] ?? []);
@@ -121,7 +125,7 @@ class Form implements IFormEvent
             return false;
         }
 
-        if ($this->namePrefix) {
+        if ($this->parentForm == null && ! empty($this->namePrefix)) {
             $data = DataHelper::get($data, $this->namePrefix, []);
         }
 

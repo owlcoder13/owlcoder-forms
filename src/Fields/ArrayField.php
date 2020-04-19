@@ -14,6 +14,12 @@ class ArrayField extends Field
     public $createInstance;
     public $nestedConfig;
 
+//    /**
+//     * Field can not apply itself. It calls child forms to apply data
+//     * @var bool
+//     */
+//    public $canApply = false;
+
     public $onBeforeEachSave;
 
     public $forms = [];
@@ -98,22 +104,6 @@ class ArrayField extends Field
     }
 
     /**
-     * clear method to cancel apply
-     */
-    public function beforeSave()
-    {
-
-    }
-
-    /**
-     * apply after other field saved
-     */
-    public function afterSave()
-    {
-        $this->apply();
-    }
-
-    /**
      * Get value from nested forms
      * @return array
      */
@@ -143,6 +133,11 @@ class ArrayField extends Field
         $this->hiddenForm = $this->createHiddenForm();
     }
 
+    public function apply()
+    {
+        return DataHelper::set($this->instance, $this->attribute, $this->toArray()[$this->attribute]);
+    }
+
     /**
      * Reset our forms and create new ones
      *
@@ -155,6 +150,7 @@ class ArrayField extends Field
 
         $this->data = $data;
         $this->files = $files;
+        $this->value = $data;
 
         $localData = DataHelper::get($data, $this->attribute);
         $localFiles = DataHelper::get($files, $this->attribute);
