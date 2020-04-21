@@ -2,11 +2,8 @@
 
 namespace Owlcoder\Forms\Fields;
 
-use Owlcoder\Common\Helpers\ViewHelper;
 use Owlcoder\Forms\Form;
-use Illuminate\Support\Arr;
-use Owlcoder\Common\Helpers\DataHelper;
-use Owlcoder\Forms\Helpers\Html;
+use Owlcoder\Common\Helpers\Html;
 
 class CheckboxList extends Field
 {
