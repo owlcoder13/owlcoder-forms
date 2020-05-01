@@ -1,5 +1,5 @@
 <script>
     (function (el) {
-        <?=$field->form->js()?>
-    })($('#<?=$field->form->id?>'));
+        <?=$field->nestedForm->js()?>
+    })($('#<?=$field->nestedForm->id?>'));
 </script>

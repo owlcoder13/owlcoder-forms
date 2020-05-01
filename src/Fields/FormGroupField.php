@@ -14,7 +14,7 @@ class FormGroupField extends Field
     /**
      * @var Form
      */
-    public $form;
+    public $nestedForm;
 
     public function __construct(array $config, &$instance, Form &$form)
     {
@@ -35,12 +35,17 @@ class FormGroupField extends Field
         $name = join('.', [$this->namePrefix, $this->attribute]);
         $config['namePrefix'] = $name;
 
-        $this->form = new Form($config, $this->value);
+        $this->createForm($config, $this->value);
+    }
+
+    public function createForm($config, $value)
+    {
+        $this->nestedForm = new Form($config, $this->value, $this->form);
     }
 
     public function getValue()
     {
-        return $this->form->toArray();
+        return $this->nestedForm->toArray();
     }
 
     public function render()
@@ -76,6 +81,6 @@ class FormGroupField extends Field
         $localData = DataHelper::get($data, $this->attribute);
         $localFiles = DataHelper::get($files, $this->attribute);
 
-        $this->form->load($localData, $localFiles ?? null);
+        $this->nestedForm->load($localData, $localFiles ?? null);
     }
 }

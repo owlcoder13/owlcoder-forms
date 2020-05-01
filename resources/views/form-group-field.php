@@ -9,7 +9,7 @@ $formStyle = "margin: 10px 0 10px 40px; padding: 20px; border: 1px dashed gray;"
 
     <div class="form-group-container">
         <div class="form" style="{{$formStyle}}">
-            <?=$field->form->render()?>
+            <?=$field->nestedForm->render()?>
         </div>
     </div>
 </div>

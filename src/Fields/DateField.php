@@ -11,10 +11,12 @@ use stringEncode\Exception;
 
 class DateField extends Field
 {
+    public $format = "yyyy-mm-dd";
+
     public function js()
     {
         return "$(el).datepicker({
-		'dateFormat' : 'yy-mm-dd',
+		'dateFormat' : '{$this->format}',
 		format: 'yyyy-mm-dd',
 		beforeShow: function() {
         setTimeout(function(){
