@@ -13,6 +13,13 @@ class DateField extends Field
 {
     public $format = "yyyy-mm-dd";
 
+    public function apply()
+    {
+        if ( ! empty($this->value)) {
+            parent::apply();
+        }
+    }
+
     public function js()
     {
         return "$(el).datepicker({
