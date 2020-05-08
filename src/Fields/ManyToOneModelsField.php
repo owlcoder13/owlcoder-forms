@@ -65,6 +65,8 @@ class ManyToOneModelsField extends ArrayField
         $forms = $this->forms;
         $newForms = [];
 
+        $this->value = $localData;
+
         if (is_array($localData)) {
             foreach ($localData as $k => $formData) {
 
