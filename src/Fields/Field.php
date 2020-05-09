@@ -15,6 +15,7 @@ class Field implements IFieldEvent
     use EventTrait;
     use FieldValidation;
 
+    public $nullIfEmpty = false;
     public $instance;
     public $attribute;
     public $idPrefix = '';

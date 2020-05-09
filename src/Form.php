@@ -316,12 +316,23 @@ class Form implements IFormEvent
         }
     }
 
+    /**
+     * @param Field $field
+     */
     public function applyAttributeData($field)
     {
         if (isset($this->config['applyAttributeData'])) {
             $this->config['applyAttributeData']($field);
         } else {
-            DataHelper::set($field->instance, $field->attribute, $field->value);
+
+            $value = $field->value;
+
+            // if field is empty - set in to null
+            if ($field->nullIfEmpty && empty($value)) {
+                $value = null;
+            }
+
+            DataHelper::set($field->instance, $field->attribute, $value);
         }
     }
 }
