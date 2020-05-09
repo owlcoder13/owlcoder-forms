@@ -11,15 +11,15 @@ use Owlcoder\Common\Helpers\Html;
 class DivField extends Field
 {
     public $func;
+    public $inputAttributes = [];
 
     public function render()
     {
-        $id = $this->id;
+        $inputAttributes = $this->getInputAttributes();
 
-        return Html::tag('div', 'loading...', [
-            'id' => $id,
+        return Html::tag('div', 'loading...', array_merge([
             'data-data' => json_encode($this->value),
-        ]);
+        ], $inputAttributes));
     }
 
     public function js()

@@ -37,7 +37,6 @@ class Field implements IFieldEvent
     public $id;
     public $canApply = true;
 
-    public $inputAttributes = ['class' => 'form-control'];
 
     public function __construct(array $config, &$instance, Form &$form)
     {
@@ -54,8 +53,6 @@ class Field implements IFieldEvent
         $this->idPrefix = $config['idPrefix'] ?? '';
         $this->name = static::generateFromDotName($tmpName);
         $this->id = $this->idPrefix . ($config['id'] ?? str_replace('.', '_', $tmpName));
-
-        $this->inputAttributes = ($this->config['inputAttributes'] ?? []) + $this->inputAttributes;
 
         foreach ($config as $key => $val) {
             DataHelper::set($this, $key, $val);
@@ -121,10 +118,7 @@ class Field implements IFieldEvent
     {
         $out = [];
 
-        $allAttributes = array_merge($this->inputAttributes, $additionalAttributes);
-
-        $allAttributes['name'] = $this->name;
-        $allAttributes['id'] = $this->id;
+        $allAttributes = array_merge($this->getInputAttributes(), $additionalAttributes);
 
         foreach ($allAttributes as $key => $value) {
             $value = $this->escapeAttrValue($value);
@@ -136,9 +130,11 @@ class Field implements IFieldEvent
 
     public function buildContext()
     {
+        $joinAttributes = $this->buildInputAttributes();
+
         return [
             'field' => $this,
-            'inputAttributes' => $this->buildInputAttributes(),
+            'inputAttributes' => $joinAttributes,
         ];
     }
 
@@ -259,6 +255,28 @@ class Field implements IFieldEvent
     public function toArray()
     {
         return [$this->attribute => $this->getValue()];
+    }
+
+    public $inputAttributes = ['class' => 'form-control'];
+
+    public function getInputAttributes()
+    {
+        $out = array_merge($this->inputAttributes, [
+            'name' => $this->name,
+            'id' => $this->id,
+        ]);
+
+        // merge attribute with callable function from confi
+        if (isset($this->config['getInputAttributes'])) {
+            $ia = $this->config['getInputAttributes'];
+            if (is_array($ia)) {
+                $out = array_merge($out, $ia);
+            } else if ($ia instanceof \Closure) {
+                $out = array_merge($out, $ia($this));
+            }
+        }
+
+        return $out;
     }
 
     public function renderInput()
