@@ -68,7 +68,12 @@ class ManyToOneModelsField extends ArrayField
         $this->value = $localData;
 
         if (is_array($localData)) {
+
             foreach ($localData as $k => $formData) {
+
+                if (strpos($k, '__index__') !== false) {
+                    continue;
+                }
 
                 $form = null;
 
