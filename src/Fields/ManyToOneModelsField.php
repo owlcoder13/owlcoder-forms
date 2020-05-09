@@ -39,6 +39,7 @@ class ManyToOneModelsField extends ArrayField
 
     public function afterSave()
     {
+        // todo: delete old records
         $oldData = new Collection($this->value);
         $fkField = $this->fkField;
 
