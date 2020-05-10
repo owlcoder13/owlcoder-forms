@@ -11,46 +11,50 @@ use Owlcoder\Common\Helpers\ViewHelper;
 class ManyToManyCheckboxListField extends Field
 {
     public $options;
-    public $relatedModelField;
-    public $oldData;
+    public $oldValue;
+
+    public $remoteModel;
+    public $middleModel;
+    public $toLocalKey;
+    public $toRemoteKey;
+
+    public $middleAttribute;
+
+    public $remoteLabel = 'name';
+    public $remoteId = 'id';
+
+    public $canApply = false;
 
     public function __construct($config, $instance, $form = null)
     {
         parent::__construct($config, $instance, $form);
 
         $this->name .= '[]';
-        $this->value = $this->getInitialValue();
-        $this->options = $config['options']($instance);
-        $this->relatedModelField = $config['relatedModelField'];
+
+        if (isset($this->config['options'])) {
+            $this->options = $config['options']($this);
+        } else {
+            $remoteModelClassName = $this->remoteModel;
+            $remoteModelClassName = $remoteModelClassName::all()->pluck($this->remoteLabel, $this->remoteId);
+            $this->options = $remoteModelClassName->toArray();
+        }
 
         return $this;
     }
 
     public function fetchData()
     {
-        parent::fetchData();
+        $models = data_get($this->instance, $this->middleAttribute);
+        $remoteKey = $this->toRemoteKey;
+        $ids = $models->pluck($remoteKey)->toArray();
 
-        $data = DataHelper::get($this->instance, $this->attribute, []);
-        $this->value = ArrayHelper::getColumn($data, $this->relatedModelField);
-        $this->oldData = $this->value;
+        $this->value = $ids;
+        $this->oldValue = $this->instance->{$this->middleAttribute};
     }
 
     public function renderInput()
     {
         return ViewHelper::Render(__DIR__ . '/../../resources/views/checkbox-list.php', $this->buildContext());
-    }
-
-
-    public function getInitialValue()
-    {
-        $models = data_get($this->instance, $this->attribute);
-        $fkToLocal = $this->relatedModelField;
-
-        if ($fkToLocal == null) {
-            throw new \Exception('Can not get fk for ' . $this->attribute);
-        }
-
-        return iterator_to_array($models->pluck($fkToLocal));
     }
 
     /** @var HasMany */
@@ -88,42 +92,34 @@ class ManyToManyCheckboxListField extends Field
         $this->files = $files;
     }
 
-    // do not apply to model
-    public function apply()
-    {
-
-    }
-
     public function afterSave()
     {
-        $oldData = data_get($this->instance, $this->attribute);
-
         $key = $this->getFkToLocal();
 
         $not_to_delete = [];
-        $relatedField = $this->relatedModelField;
-        $data = $this->getValueFromData($this->data, $this->files);
+        $ids = $this->getValueFromData($this->data, $this->files);
+        if (empty($ids)) {
+            $ids = [];
+        }
+        $middleModelClass = $this->middleModel;
 
-        foreach ($data as $id) {
-            $tmp = ArrayHelper::first($oldData, function ($item) use ($id, $key) {
-                return $item->$key == $id;
-            });
+        foreach ($ids as $id) {
 
-            if ($tmp == null) {
-                $relatedClass = $this->getRelatedClass();
-                $className = new $relatedClass;
+            $attributes = [
+                $this->toRemoteKey => $id,
+                $this->toLocalKey => $this->instance->id,
+            ];
 
-                $tmp = new $className;
-                $tmp->$key = $this->instance->id;
-                $tmp->$relatedField = $id;
-
-                $tmp->save();
+            $middleInstance = $middleModelClass::where($attributes)->first();
+            if ($middleInstance == null) {
+                $middleInstance = new $middleModelClass($attributes);
+                $middleInstance->save();
             }
 
-            $not_to_delete[] = $tmp->id;
+            $not_to_delete[] = $middleInstance->id;
         }
 
-        foreach ($oldData as $one) {
+        foreach ($this->oldValue as $one) {
             if ( ! in_array($one->id, $not_to_delete)) {
                 $one->delete();
             }
