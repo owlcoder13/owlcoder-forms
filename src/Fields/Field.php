@@ -242,7 +242,9 @@ class Field implements IFieldEvent
 
     public function beforeSave()
     {
-
+        if (isset($this->config['beforeSave'])) {
+            $this->config['beforeSave']($this);
+        }
     }
 
     public function afterSave()

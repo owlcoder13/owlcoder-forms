@@ -22,11 +22,18 @@ class ArrayField extends Field
 
     public $onBeforeEachSave;
 
+    /** @var Form[] */
     public $forms = [];
 
     public $template = 'array-field';
 
     public $hiddenForm = null;
+
+    /**
+     * enable Sortable plugin
+     * @var bool
+     */
+    public $sort = false;
 
     /**
      * Create hidden form
@@ -44,6 +51,20 @@ class ArrayField extends Field
         }
 
         $this->hiddenForm = $this->createHiddenForm();
+    }
+
+    public function fetchData()
+    {
+        $instances = DataHelper::get($this->instance, $this->attribute);
+
+        if (empty($instances) || ! is_array($instances)) {
+            $instances = [];
+        }
+
+        foreach ($instances as $key => $instance) {
+            $form = $this->createForm($instance, $key);
+            $this->forms[$key] = $form;
+        }
     }
 
     /**
@@ -96,8 +117,9 @@ class ArrayField extends Field
     {
         $out = [];
 
-        foreach ($this->config['nestedConfig']['fields'] as $field) {
-            $out[$field['attribute']] = null;
+        foreach ($this->config['nestedConfig']['fields'] as $key => $field) {
+            $attribute = $field['attribute'] ?? $key;
+            $out[$attribute] = null;
         }
 
         return $out;
@@ -146,14 +168,17 @@ class ArrayField extends Field
      */
     public function load($data, $files)
     {
-        $this->forms = [];
-
         $this->data = $data;
         $this->files = $files;
         $this->value = $data;
 
+        $oldForms = $this->forms;
+        $this->forms = [];
+
         $localData = DataHelper::get($data, $this->attribute);
         $localFiles = DataHelper::get($files, $this->attribute);
+
+//        $handledKeys = [];
 
         if (is_array($localData)) {
             foreach ($localData as $k => $formData) {
@@ -166,16 +191,22 @@ class ArrayField extends Field
                 }
 
                 $newModel = $this->createEmptyInstance();
-                $form = $this->createForm($newModel, $k);
-                $this->forms[] = $form;
 
-                $form->load($formData, $localFiles[$k] ?? null);
+                if (isset($oldForms[$k])) {
+                    $form = $oldForms[$k];
+                    $form->load($formData, $localFiles[$k] ?? null);
+                } else {
+                    $form = $this->createForm($newModel, $k);
+                    $form->load($formData, $localFiles[$k] ?? null);
+                }
+
+                $this->forms[] = $form;
             }
-            return true;
         }
 
         return false;
     }
+
 
     /**
      * Create hidden form for dynamically add new record
@@ -220,5 +251,19 @@ class ArrayField extends Field
                 return $childForm->toArray();
             }, $this->forms)
         ];
+    }
+
+    public function beforeSave()
+    {
+        foreach ($this->forms as $form) {
+            $form->beforeSave();
+        }
+    }
+
+    public function afterSave()
+    {
+        foreach ($this->forms as $form) {
+            $form->afterSave();
+        }
     }
 }

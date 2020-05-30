@@ -10,6 +10,14 @@
         $(this).closest('.form').remove();
     });
 
+    if (window.Sortable){
+        <?php if($field->sort) { ?>
+            new Sortable(el.find('.forms-container')[0], {
+                item: '> .form',
+            });
+        <?php } ?>
+    }
+
     var index = <?=count($field->forms)?>;
 
     el.find('> .append').on('click', function (e) {

@@ -28,11 +28,6 @@ class ImageField extends FileField
      */
     public $unique = true;
 
-    public function __construct(array $config, $instance, Form $form)
-    {
-        parent::__construct($config, $instance, $form);
-    }
-
     /**
      * @param $data
      * @param FileBag $files

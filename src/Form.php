@@ -69,20 +69,24 @@ class Form implements IFormEvent
         // create form fields
         $config['fields'] = $config['fields'] ?? [];
         foreach (array_merge($this->getFields(), $config['fields']) as $key => $value) {
-
             $fieldConf = Field::normalizeFormConfig($key, $value);
-            $fieldClass = $fieldConf['class'];
-
-            $namePrefix = $this->namePrefix ? $this->namePrefix : '';
-            $fieldConf['namePrefix'] = $namePrefix;
-            $fieldConf['idPrefix'] = $config['idPrefix'] ?? '';
-
-            $field = new $fieldClass($fieldConf, $i, $this);
-            $field->init();
-            $this->fields[$field->attribute] = $field;
+            $this->fields[$fieldConf['attribute']] = $this->createField($fieldConf, $i);
         }
 
         $this->initRules();
+    }
+
+    public function createField($fieldConf, &$i)
+    {
+        $fieldClass = $fieldConf['class'];
+
+        $namePrefix = $this->namePrefix ? $this->namePrefix : '';
+        $fieldConf['namePrefix'] = $namePrefix;
+        $fieldConf['idPrefix'] = $config['idPrefix'] ?? '';
+
+        $field = new $fieldClass($fieldConf, $i, $this);
+        $field->init();
+        return $field;
     }
 
     public function render()
@@ -169,14 +173,14 @@ class Form implements IFormEvent
             return $s;
         }
 
-        foreach ($this->fields as $field) {
-            $field->afterSave();
-        }
-
         $this->afterSave();
 
-
         return true;
+    }
+
+    public function fieldAfterSave()
+    {
+
     }
 
     public function apply()
@@ -194,6 +198,10 @@ class Form implements IFormEvent
 
     public function afterSave()
     {
+        foreach ($this->fields as $field) {
+            $field->afterSave();
+        }
+
         $this->triggerEvent(Form::AFTER_SAVE, $this);
     }
 
