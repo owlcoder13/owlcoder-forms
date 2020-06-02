@@ -24,7 +24,11 @@ class ImageField extends Field
         $render = parent::render();
 
         if ($this->value) {
-            $render .= Html::tag('img', '', ['src' => $this->value]);
+            $render .= Html::tag('img', '', [
+                'src' => $this->value,
+                'class' => 'thumbnail',
+                'style' => 'max-width: 200px; max-height: 200px;',
+            ]);
         }
 
         return $render;
