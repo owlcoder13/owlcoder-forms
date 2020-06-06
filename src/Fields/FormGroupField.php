@@ -20,7 +20,7 @@ class FormGroupField extends Field
     {
         parent::__construct($config, $instance, $form);
 
-        if ( ! isset($config['nestedConfig'])) {
+        if ( ! isset($config['nestedConfig']) && empty($this->nestedConfig)) {
             throw new \Exception('Array field must have nestedConfig attribute');
         }
     }
