@@ -3,11 +3,17 @@
 namespace Owlcoder\Forms\Fields;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Arr;
 use Owlcoder\Common\Helpers\ArrayHelper;
 use Owlcoder\Common\Helpers\DataHelper;
 use Owlcoder\Common\Helpers\ViewHelper;
 
+/**
+ * Attribute for this model must be middle model
+ * Class ManyToManyCheckboxListField
+ * @package Owlcoder\Forms\Fields
+ */
 class ManyToManyCheckboxListField extends Field
 {
     public $options;
@@ -32,24 +38,33 @@ class ManyToManyCheckboxListField extends Field
         $this->name .= '[]';
 
         if (isset($this->config['options'])) {
-            $this->options = $config['options']($this);
+            if (is_callable($config['options'])) {
+                $this->options = $config['options']($this);
+            } else {
+                $this->options = $config['options'];
+            }
         } else {
             $remoteModelClassName = $this->remoteModel;
             $remoteModelClassName = $remoteModelClassName::all()->pluck($this->remoteLabel, $this->remoteId);
             $this->options = $remoteModelClassName->toArray();
         }
 
+        $this->remoteModel = $config['remoteModel'] ?? null;
+        $this->middleModel = $config['middleModel'] ?? null;
+        $this->toLocalKey = $config['toLocalKey'] ?? null;
+        $this->toRemoteKey = $config['toRemoteKey'] ?? null;
+
         return $this;
     }
 
     public function fetchData()
     {
-        $models = data_get($this->instance, $this->middleAttribute);
+        $models = data_get($this->instance, $this->attribute);
         $remoteKey = $this->toRemoteKey;
         $ids = $models->pluck($remoteKey)->toArray();
 
         $this->value = $ids;
-        $this->oldValue = $this->instance->{$this->middleAttribute};
+        $this->oldValue = $this->instance->{$this->attribute};
     }
 
     public function renderInput()

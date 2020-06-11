@@ -56,7 +56,9 @@ class ImageField extends FileField
         $render = parent::render();
 
         if ($this->value) {
-            $render .= \Owlcoder\Common\Helpers\Html::tag('img', '', ['src' => $this->value]);
+            $render .= \Owlcoder\Common\Helpers\Html::tag('img', '', [
+                'src' => $this->value,
+                'style' => 'max-width: 200px; max-height: 200px;']);
         }
 
         return $render;

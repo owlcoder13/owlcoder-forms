@@ -24,7 +24,14 @@ class ManyToOneModelsField extends ArrayField
     {
         $attr = $this->attribute;
         $value = $this->instance->$attr;
-        $this->value = iterator_to_array($value);
+
+        if (is_iterable($value)) {
+            $value = iterator_to_array($value);
+        } else {
+            $value = [];
+        }
+
+        $this->value = $value;
     }
 
     public function toArray()
