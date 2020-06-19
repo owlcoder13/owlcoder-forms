@@ -50,8 +50,12 @@ class ManyToOneModelsField extends ArrayField
         $oldData = new Collection($this->value);
         $fkField = $this->fkField;
 
-        foreach ($this->forms as $form) {
+        foreach ($this->forms as $key => $form) {
             $form->instance[$fkField] = $this->instance->id;
+            if ($this->sortField) {
+                $form->instance[$this->sortField] = $key;
+            }
+
             $form->save();
         }
 

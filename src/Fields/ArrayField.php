@@ -13,6 +13,7 @@ class ArrayField extends Field
     public $model;
     public $createInstance;
     public $nestedConfig;
+    public $sortField = null;
 
 //    /**
 //     * Field can not apply itself. It calls child forms to apply data
