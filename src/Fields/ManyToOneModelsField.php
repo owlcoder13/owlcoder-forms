@@ -8,6 +8,13 @@ use Owlcoder\Forms\Form;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 
+/**
+ * Required config params:
+ *  fkField => field for setting relation key
+ *  modelClassName => create new instance of related model
+ * Class ManyToOneModelsField
+ * @package Owlcoder\Forms\Fields
+ */
 class ManyToOneModelsField extends ArrayField
 {
 

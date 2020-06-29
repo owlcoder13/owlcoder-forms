@@ -3,6 +3,7 @@
 namespace Owlcoder\Forms\Fields;
 
 use Owlcoder\Common\EventTrait;
+use Owlcoder\Common\Helpers\Html;
 use Owlcoder\Forms\Validation\FieldValidation;
 use Owlcoder\Forms\Form;
 use Owlcoder\Forms\IFieldEvent;
@@ -36,6 +37,7 @@ class Field implements IFieldEvent
     public $namePrefix = '';
     public $id;
     public $canApply = true;
+    public $tip;
 
 
     public function __construct(array $config, &$instance, Form &$form)
@@ -43,7 +45,7 @@ class Field implements IFieldEvent
         $this->instance = &$instance;
         $this->form = $form;
         $this->config = $config;
-        $this->attribute = $config['attribute'];
+        $this->attribute = $config['attribute'] ?? null;
         $this->label = $config['label'] ?? $config['attribute'] ?? '';
         $this->rules = $config['rules'] ?? [];
 
@@ -308,11 +310,22 @@ class Field implements IFieldEvent
         return $out;
     }
 
+    public function renderTip()
+    {
+        if ( ! empty($this->tip)) {
+            return Html::tag('div', $this->tip,[
+                'class' => 'form-tip'
+            ]);
+        }
+    }
+
     public function render()
     {
         $out = $this->renderLabel();
         $out .= $this->renderInput();
+        $out .= $this->renderTip();
         $out .= $this->renderErrors();
+
 
         return $out;
     }

@@ -36,6 +36,8 @@ class ArrayField extends Field
      */
     public $sort = false;
 
+    public $view = __DIR__ . '/../../resources/views/array-field.php';
+
     /**
      * Create hidden form
      * ArrayField constructor.
@@ -47,8 +49,8 @@ class ArrayField extends Field
     {
         parent::__construct($config, $instance, $form);
 
-        if ( ! isset($config['nestedConfig'])) {
-            throw new \Exception('Array field must have nestedConfig attribute');
+        if (isset($config['nestedConfig'])) {
+            $this->nestedConfig = array_merge_recursive($this->nestedConfig, $config['nestedConfig']);
         }
 
         $this->hiddenForm = $this->createHiddenForm();
@@ -90,8 +92,8 @@ class ArrayField extends Field
             'namePrefix' => $name,
         ];
 
-        if (isset($this->config['nestedConfig']) && is_array($this->config['nestedConfig'])) {
-            $config = array_merge($config, $this->config['nestedConfig']);
+        if ( ! empty($this->nestedConfig)) {
+            $config = array_merge($config, $this->nestedConfig);
         }
 
         $newForm = new Form($config, $instance, $this->form);
@@ -105,7 +107,7 @@ class ArrayField extends Field
      */
     public function render()
     {
-        return ViewHelper::Render(__DIR__ . '/../../resources/views/array-field.php', [
+        return ViewHelper::Render($this->view, [
             'field' => $this,
         ]);
     }
@@ -118,7 +120,9 @@ class ArrayField extends Field
     {
         $out = [];
 
-        foreach ($this->config['nestedConfig']['fields'] as $key => $field) {
+        $fields = $this->nestedConfig['fields'] ?? [];
+
+        foreach ($fields as $key => $field) {
             $attribute = $field['attribute'] ?? $key;
             $out[$attribute] = null;
         }
