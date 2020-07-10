@@ -2,6 +2,7 @@
 
 namespace Owlcoder\Forms\Validation;
 
+use Egulias\EmailValidator\EmailValidator;
 use Owlcoder\Forms\Form;
 
 /**
@@ -87,6 +88,8 @@ trait FieldValidation
                 return new StripTagsValidator($field, $options);
             case 'number':
                 return new NumberValidator($field, $options);
+            case 'email':
+                return new EmailValidator($field, $options);
         }
 
         throw new \Exception('Validator not found');
