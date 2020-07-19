@@ -50,7 +50,7 @@ class ArrayField extends Field
         parent::__construct($config, $instance, $form);
 
         if (isset($config['nestedConfig'])) {
-            $this->nestedConfig = array_merge_recursive($this->nestedConfig, $config['nestedConfig']);
+            $this->nestedConfig = array_merge($this->nestedConfig, $config['nestedConfig']);
         }
 
         $this->hiddenForm = $this->createHiddenForm();
