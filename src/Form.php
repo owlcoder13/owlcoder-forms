@@ -68,7 +68,9 @@ class Form implements IFormEvent
 
         // create form fields
         $config['fields'] = $config['fields'] ?? [];
-        foreach (array_merge($this->getFields(), $config['fields']) as $key => $value) {
+
+        $totalFields = array_merge($this->getFields(), $config['fields']);
+        foreach ($totalFields as $key => $value) {
             $fieldConf = Field::normalizeFormConfig($key, $value);
             $this->fields[$fieldConf['attribute']] = $this->createField($fieldConf, $i);
         }
