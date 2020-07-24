@@ -71,6 +71,8 @@ trait FormValidation
 
     public function validate()
     {
+        $this->errors = [];
+
         $this->triggerEvent(self::BEFORE_VALIDATE, $this);
 
         foreach ($this->fields as $field) {
