@@ -12,10 +12,11 @@ use stringEncode\Exception;
 class DateField extends Field
 {
     public $format = "yyyy-mm-dd";
+    public $allowEmpty = false;
 
     public function apply()
     {
-        if ( ! empty($this->value)) {
+        if ($this->allowEmpty || ! empty($this->value)) {
             parent::apply();
         }
     }

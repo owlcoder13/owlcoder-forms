@@ -4,6 +4,12 @@ namespace Owlcoder\Forms\Fields;
 
 class CheckBoxField extends Field
 {
+    public function apply()
+    {
+        $this->value = (int) $this->value;
+        parent::apply();
+    }
+
     public function renderInput()
     {
         $attributes = $this->buildInputAttributes([
