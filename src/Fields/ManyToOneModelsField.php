@@ -69,9 +69,8 @@ class ManyToOneModelsField extends ArrayField
         foreach ($this->formsToDelete as $one) {
             $one->instance->delete();
         }
-
-        parent::afterSave();
     }
+
 
     public function load($data, $files)
     {

@@ -47,6 +47,10 @@ class ImageField extends FileField
     public function afterSave()
     {
         if ($this->file) {
+            if ( ! file_exists($this->basePath)) {
+                mkdir($this->basePath, 0777, true);
+            }
+
             $this->file->move($this->basePath, $this->fileName);
         }
     }
