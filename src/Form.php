@@ -42,6 +42,7 @@ class Form implements IFormEvent
 
         $this->instance = &$instance ?? [];
 
+        // For working with multiple forms on page
         if ( ! empty($config['namePrefix'])) {
             $this->namePrefix = $config['namePrefix'];
         }

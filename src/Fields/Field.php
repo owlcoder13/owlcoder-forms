@@ -16,26 +16,43 @@ class Field implements IFieldEvent
     use EventTrait;
     use FieldValidation;
 
+    /** @var bool set data value to null if empty loading data */
     public $nullIfEmpty = false;
+
+    /** @var object|array store source data */
     public $instance;
+
+    /** @var string */
     public $attribute;
+
     public $idPrefix = '';
     public $type = 'text';
 
+    /** @var array from load method */
     public $data;
+    /** @var array from load method */
     public $files;
 
+    /** @var Form the parent form of current field */
     public $form;
 
     public $template = 'forms.text-field';
     public $label;
+
+    /** @var mixed current value buffer */
     public $value;
+
+    /** @var string name of current field */
     public $name;
 
     public $config = [];
 
+    /** @var string if you using nested forms */
     public $namePrefix = '';
+
     public $id;
+
+    /** @var bool May field write data back to source or not */
     public $canApply = true;
     public $tip;
 
@@ -313,7 +330,7 @@ class Field implements IFieldEvent
     public function renderTip()
     {
         if ( ! empty($this->tip)) {
-            return Html::tag('div', $this->tip,[
+            return Html::tag('div', $this->tip, [
                 'class' => 'form-tip'
             ]);
         }
