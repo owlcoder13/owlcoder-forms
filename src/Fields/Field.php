@@ -247,6 +247,8 @@ class Field implements IFieldEvent
         if (isset($this->config['beforeSave'])) {
             $this->config['beforeSave']($this);
         }
+
+        $this->triggerEvent(self::EVENT_BEFORE_SET, $this);
     }
 
     public function afterSave()
@@ -313,7 +315,7 @@ class Field implements IFieldEvent
     public function renderTip()
     {
         if ( ! empty($this->tip)) {
-            return Html::tag('div', $this->tip,[
+            return Html::tag('div', $this->tip, [
                 'class' => 'form-tip'
             ]);
         }
