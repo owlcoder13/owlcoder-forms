@@ -223,7 +223,7 @@ class Field implements IFieldEvent
 
     public function dataHasValue($data, $file)
     {
-        return array_key_exists($this->attribute, $data);
+        return is_array($data) && array_key_exists($this->attribute, $data);
     }
 
     public function getValueFromData($data, $file)
