@@ -134,6 +134,7 @@ class ManyToManyCheckboxListField extends Field
             $not_to_delete[] = $middleInstance->id;
         }
 
+
         foreach ($this->oldValue as $one) {
             if ( ! in_array($one->id, $not_to_delete)) {
                 $one->delete();
