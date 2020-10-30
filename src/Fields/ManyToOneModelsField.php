@@ -2,11 +2,7 @@
 
 namespace Owlcoder\Forms\Fields;
 
-use Illuminate\Support\Collection;
 use Owlcoder\Common\Helpers\DataHelper;
-use Owlcoder\Forms\Form;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Arr;
 
 /**
  * Required config params:
@@ -48,13 +44,11 @@ class ManyToOneModelsField extends ArrayField
 
     public function apply()
     {
-        //        parent::apply();
+        // nothing here
     }
 
     public function afterSave()
     {
-        // todo: delete old records
-        $oldData = new Collection($this->value);
         $fkField = $this->fkField;
 
         foreach ($this->forms as $key => $form) {
@@ -71,14 +65,28 @@ class ManyToOneModelsField extends ArrayField
         }
     }
 
+    public function getDataAndFiles($data, $files)
+    {
+        $localData = DataHelper::get($data, $this->attribute);
+        $localFiles = DataHelper::get($files, $this->attribute);
+
+        // fill data if only files exist
+        if ($localData == null && $localFiles != null) {
+            $localData = [];
+            foreach ($localFiles as $key => $value) {
+                $localData[$key] = [];
+            }
+        }
+
+        return [$localData, $localFiles];
+    }
 
     public function load($data, $files)
     {
         $this->data = $data;
         $this->files = $files;
 
-        $localData = DataHelper::get($data, $this->attribute);
-        $localFiles = DataHelper::get($files, $this->attribute);
+        list($localData, $localFiles) = $this->getDataAndFiles($data, $files);
 
         $forms = $this->forms;
         $newForms = [];

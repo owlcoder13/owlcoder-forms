@@ -223,7 +223,7 @@ class Field implements IFieldEvent
 
     public function dataHasValue($data, $file)
     {
-        return array_key_exists($this->attribute, $data);
+        return is_array($data) && array_key_exists($this->attribute, $data);
     }
 
     public function getValueFromData($data, $file)
@@ -264,6 +264,8 @@ class Field implements IFieldEvent
         if (isset($this->config['beforeSave'])) {
             $this->config['beforeSave']($this);
         }
+
+        $this->triggerEvent(self::EVENT_BEFORE_SET, $this);
     }
 
     public function afterSave()
