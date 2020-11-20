@@ -9,7 +9,7 @@ class TextAreaField extends Field
     public function renderInput()
     {
         $attributes = $this->buildInputAttributes([
-            'value' => $this->escapeAttrValue($this->getValue()),
+//            'value' => $this->escapeAttrValue($this->getValue()),
             'rows' => $this->rows,
         ]);
 
