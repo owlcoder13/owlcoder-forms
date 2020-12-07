@@ -2,6 +2,7 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\Html;
 use Owlcoder\Forms\Form;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
@@ -18,11 +19,9 @@ class FileField extends Field
 
     public function renderInput()
     {
-        $attributes = $this->buildInputAttributes([
-            'value' => $this->escapeAttrValue($this->getValue()),
-        ]);
+        $attributes = array_merge($this->getInputAttributes(), ['type' => 'file']);
 
-        return "<input {$attributes} type='file' value='{$this->value}'/>";
+        return Html::tag('input', '', $attributes);
     }
 
     /** @var string */

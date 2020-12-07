@@ -111,52 +111,6 @@ class Field implements IFieldEvent
         return $this->value;
     }
 
-    /**
-     * Use for rendering attributes with single quote
-     * @param $value
-     * @return false|string
-     */
-    public function escapeAttrValue($value)
-    {
-        if ( ! is_string($value) && ! is_numeric($value) && ! empty($value)) {
-            throw new \Exception("Can not escape field $this->attribute: " . print_r($value, true));
-        }
-        return htmlspecialchars($value);
-    }
-
-    public function getEscapedValue()
-    {
-        return $this->escapeAttrValue($this->value);
-    }
-
-    /**
-     * Build html attributes to string from associative array
-     * @return string
-     */
-    public function buildInputAttributes($additionalAttributes = [])
-    {
-        $out = [];
-
-        $allAttributes = array_merge($this->getInputAttributes(), $additionalAttributes);
-
-        foreach ($allAttributes as $key => $value) {
-            $value = $this->escapeAttrValue($value);
-            $out[] = $key . '=' . '"' . $value . '"';
-        }
-
-        return join(' ', $out);
-    }
-
-    public function buildContext()
-    {
-        $joinAttributes = $this->buildInputAttributes();
-
-        return [
-            'field' => $this,
-            'inputAttributes' => $joinAttributes,
-        ];
-    }
-
     public static function generateFromDotName($dotName)
     {
         $parts = explode('.', $dotName);
@@ -304,12 +258,19 @@ class Field implements IFieldEvent
 
     public function renderInput()
     {
-        $attributes = $this->buildInputAttributes([
-            'value' => $this->escapeAttrValue($this->getValue()),
+        $attributes = array_merge($this->getInputAttributes(), [
+            'value' => $this->getValue(),
             'type' => $this->type,
         ]);
 
-        return "<input {$attributes} value='{$this->value}'/>";
+        return Html::tag('input', '', $attributes);
+    }
+
+    public function buildContext()
+    {
+        return [
+            'field' => $this,
+        ];
     }
 
     public function renderLabel()
