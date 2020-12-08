@@ -2,6 +2,8 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\Html;
+
 class SelectField extends Field
 {
     public $options = [];
@@ -11,7 +13,7 @@ class SelectField extends Field
     {
         parent::__construct($config, $instance, $form);
 
-        if(isset($config['options'])){
+        if (isset($config['options'])) {
             if (is_callable($config['options'])) {
                 $this->options = $config['options']($this);
             } else {
@@ -31,17 +33,14 @@ class SelectField extends Field
 
     public function renderInput()
     {
-        $attributes = $this->buildInputAttributes();
-
-        $out = "<select {$attributes}>";
+        $attributes = $this->getInputAttributes();
+        $out = '';
 
         foreach ($this->options as $key => $one) {
             $selected = $key == $this->getValue() ? 'selected' : '';
-            $out .= "<option $selected value='$key'>{$one}</option>";
+            $out .= Html::tag('option', $one, ['value' => $key, 'selected' => $selected ? true : null]);
         }
 
-        $out .= "</select>";
-
-        return $out;
+        return Html::tag('select', $out, $attributes);
     }
 }
