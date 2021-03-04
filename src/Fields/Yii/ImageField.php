@@ -19,16 +19,21 @@ class ImageField extends Field
         parent::fetchData();
     }
 
+    public function renderImage()
+    {
+        return Html::tag('img', '', [
+            'src' => $this->value,
+            'class' => 'thumbnail',
+            'style' => 'max-width: 200px; max-height: 200px;',
+        ]);
+    }
+
     public function render()
     {
         $render = parent::render();
 
         if ($this->value) {
-            $render .= Html::tag('img', '', [
-                'src' => $this->value,
-                'class' => 'thumbnail',
-                'style' => 'max-width: 200px; max-height: 200px;',
-            ]);
+            $render .=$this->renderImage();
         }
 
         return $render;
@@ -70,7 +75,7 @@ class ImageField extends Field
     public function afterSave()
     {
         if ($this->file) {
-            if ( ! file_exists($this->basePath)) {
+            if (!file_exists($this->basePath)) {
                 mkdir($this->basePath, 0777, true);
             }
 
