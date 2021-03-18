@@ -16,9 +16,20 @@ class DateField extends Field
 
     public function apply()
     {
-        if ($this->allowEmpty || ! empty($this->value)) {
+        if ($this->allowEmpty || !empty($this->value)) {
             parent::apply();
         }
+    }
+
+    /**
+     * Disable browser autocomplete
+     * @return array
+     */
+    public function getInputAttributes()
+    {
+        $parentAttributes = parent::getInputAttributes();
+        $parentAttributes['autocomplete'] = 'off';
+        return $parentAttributes;
     }
 
     public function js()
