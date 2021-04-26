@@ -76,7 +76,7 @@ trait FormValidation
         $this->triggerEvent(self::BEFORE_VALIDATE, $this);
 
         foreach ($this->fields as $field) {
-            if ( ! $field->validate()) {
+            if ( ! $field->validate() && ! empty($field->errors)) {
                 $this->addError($field->attribute, $field->errors);
             }
         }

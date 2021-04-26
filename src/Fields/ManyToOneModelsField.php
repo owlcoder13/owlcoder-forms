@@ -23,18 +23,31 @@ class ManyToOneModelsField extends ArrayField
         return new $this->modelClassName;
     }
 
-    public function fetchData()
+    /**
+     * Translate value from instance to array
+     * @param $value
+     * @return array
+     */
+    protected function fetchedToArray($value)
     {
-        $attr = $this->attribute;
-        $value = $this->instance->$attr;
-
-        if (is_iterable($value)) {
+        if (is_array($value)) {
+            return $value;
+        } else if (is_object($value) && is_iterable($value)) {
             $value = iterator_to_array($value);
         } else {
             $value = [];
         }
 
-        $this->value = $value;
+        return $value;
+    }
+
+    public function fetchData()
+    {
+        $attr = $this->attribute;
+        $value = $this->instance->$attr;
+
+
+        $this->value = $this->fetchedToArray($value);
     }
 
     public function toArray()
@@ -103,7 +116,7 @@ class ManyToOneModelsField extends ArrayField
 
                 $form = null;
 
-                if ( ! empty($formData['id'])) {
+                if (!empty($formData['id'])) {
                     $form = $this->searchForm($formData['id'], $forms);
                 }
 

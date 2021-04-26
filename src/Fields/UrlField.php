@@ -8,8 +8,10 @@ class UrlField extends Field
     {
         $value = $this->getValue();
 
-        if (!empty($value) && $value[0] != '/') {
-            throw new \Owlcoder\Forms\ValidationException("Url must starts with '/'");
+        if ( ! empty($value) && $value[0] != '/') {
+            $this->addError("Url must starts with '/'");
         }
+
+        return count($this->errors) === 0;
     }
 }

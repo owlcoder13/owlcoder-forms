@@ -2,6 +2,8 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\Html;
+
 class CheckBoxField extends Field
 {
     public function apply()
@@ -12,7 +14,7 @@ class CheckBoxField extends Field
 
     public function renderInput()
     {
-        $attributes = $this->buildInputAttributes([
+        $attributes = array_merge($this->getInputAttributes(), [
             'type' => 'hidden',
             'class' => '',
             'value' => '0',
@@ -29,8 +31,8 @@ class CheckBoxField extends Field
             $attributesActive['checked'] = 1;
         }
 
-        $attributesActive = $this->buildInputAttributes($attributesActive);
+        $attributesActive = array_merge($this->getInputAttributes(), $attributesActive);
 
-        return "<input $attributes >" . "<input $attributesActive >";
+        return Html::tag('input', '', $attributes) . Html::tag('input', '', $attributesActive);
     }
 }

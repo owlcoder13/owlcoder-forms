@@ -2,17 +2,18 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\Html;
+
 class TextAreaField extends Field
 {
     public $rows = 6;
 
     public function renderInput()
     {
-        $attributes = $this->buildInputAttributes([
-            'value' => $this->escapeAttrValue($this->getValue()),
+        $attributes = array_merge($this->getInputAttributes(), [
             'rows' => $this->rows,
         ]);
 
-        return "<textarea {$attributes} type='text'>{$this->value}</textarea>";
+        return Html::tag('textarea', $this->value, $attributes);
     }
 }

@@ -2,11 +2,13 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\Html;
 use Owlcoder\Forms\Form;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\FileBag;
+use Owlcoder\Common\Helpers\DataHelper;
 
 class FileField extends Field
 {
@@ -18,11 +20,9 @@ class FileField extends Field
 
     public function renderInput()
     {
-        $attributes = $this->buildInputAttributes([
-            'value' => $this->escapeAttrValue($this->getValue()),
-        ]);
+        $attributes = array_merge($this->getInputAttributes(), ['type' => 'file']);
 
-        return "<input {$attributes} type='file' value='{$this->value}'/>";
+        return Html::tag('input', '', $attributes);
     }
 
     /** @var string */
@@ -32,13 +32,13 @@ class FileField extends Field
     {
         parent::__construct($config, $instance, $form);
 
-        $this->uri = data_get($this->config, 'directory', '/uploads/');
+        $this->uri = DataHelper::get($this->config, 'directory', '/uploads/');
 
         if (substr($this->uri, -1) != '/') {
             $this->uri .= '/';
         }
 
-        $this->directory = base_path('public' . data_get($this->config, 'directory', $this->uri));
+        $this->directory = base_path('public' . DataHelper::get($this->config, 'directory', $this->uri));
     }
 
     /**
