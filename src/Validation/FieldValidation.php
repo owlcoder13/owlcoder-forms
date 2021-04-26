@@ -52,6 +52,15 @@ trait FieldValidation
                 }
 
                 $validator = $this->getPredefinedValidator($key, $this, $one);
+
+                if ($validator == null) {
+                    $validator = $this->getValidatorByClassName($key, $this, $one);
+                }
+
+                if ($validator == null) {
+                    throw new \Exception(sprintf('Validator %s not found', $key));
+                }
+
                 $validator->makeValidation();
             } else if ($one instanceof \Closure) {
                 $one($this);
@@ -92,6 +101,23 @@ trait FieldValidation
                 return new EmailValidator($field, $options);
         }
 
-        throw new \Exception('Validator not found');
+        return null;
+    }
+
+    /**
+     * Get validator by class Name
+     *
+     * @param $className
+     * @param $field
+     * @param $options
+     * @return mixed|null
+     */
+    public function getValidatorByClassName($className, $field, $options)
+    {
+        if (class_exists($className)) {
+            return new $className($field, $options);
+        }
+
+        return null;
     }
 }
