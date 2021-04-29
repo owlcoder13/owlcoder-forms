@@ -19,7 +19,13 @@ trait FormValidation
             $this->errors[$attribute] = [];
         }
 
-        $this->errors[$attribute][] = $errors;
+        if (is_array($errors)) {
+            foreach ($errors as $one) {
+                $this->errors[$attribute][] = $one;
+            }
+        } else {
+            $this->errors[$attribute][] = $errors;
+        }
     }
 
     /**
@@ -46,13 +52,13 @@ trait FormValidation
                 }
             }
 
-            if ( ! is_array($fields)) { // if simple string
+            if (!is_array($fields)) { // if simple string
                 $fields = [$fields];
             }
 
 
             foreach ($fields as $field) {
-                if ( ! empty($this->fields[$field])) {
+                if (!empty($this->fields[$field])) {
                     $this->fields[$field]->rules[] = $validator;
                 }
             }
@@ -76,7 +82,7 @@ trait FormValidation
         $this->triggerEvent(self::BEFORE_VALIDATE, $this);
 
         foreach ($this->fields as $field) {
-            if ( ! $field->validate() && ! empty($field->errors)) {
+            if (!$field->validate() && !empty($field->errors)) {
                 $this->addError($field->attribute, $field->errors);
             }
         }
