@@ -5,7 +5,6 @@ namespace Owlcoder\Forms\Fields;
 use Owlcoder\Common\Helpers\DataHelper;
 use Owlcoder\Common\Helpers\ViewHelper;
 use Owlcoder\Forms\Form;
-use Illuminate\Support\Arr;
 
 class FormGroupField extends Field
 {
@@ -28,24 +27,35 @@ class FormGroupField extends Field
     public function init()
     {
         parent::init();
-
-        $config = $this->nestedConfig;
-
-        // create name prefix
-        $name = join('.', [$this->namePrefix, $this->attribute]);
-        $config['namePrefix'] = $name;
-
-        $this->createForm($config, $this->value);
     }
 
-    public function createForm($config, $value)
+    public function fetchData()
     {
-        $this->nestedForm = new Form($config, $this->value, $this->form);
+        parent::fetchData();
+
+        // create name prefix
+        $this->createForm($this->value);
+    }
+
+    public function createForm($value)
+    {
+        if (empty($this->nestedForm)) {
+            $config = $this->nestedConfig;
+            $path = [$this->namePrefix, $this->attribute];
+            $path = array_filter($path);
+            $name = join('.', $path);
+
+            $config['namePrefix'] = $name;
+
+            $this->nestedForm = new Form($config, $this->value, $this->form);
+        }
     }
 
     public function getValue()
     {
-        return $this->nestedForm->toArray();
+        if ($this->nestedForm) {
+            return $this->nestedForm->toArray();
+        }
     }
 
     public function render()
