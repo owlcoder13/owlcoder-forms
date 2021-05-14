@@ -28,6 +28,9 @@ class ImageField extends FileField
      */
     public $unique = true;
 
+    /** @var bool was file saved already */
+    public $alreadySaved = false;
+
     /**
      * @param $data
      * @param FileBag $files
@@ -41,7 +44,6 @@ class ImageField extends FileField
             $this->fileName = $fileName;
             $this->value = File::removeDoubleSlash($this->baseUri . '/' . $fileName);
         }
-
     }
 
     public function afterSave()
@@ -51,7 +53,12 @@ class ImageField extends FileField
                 mkdir($this->basePath, 0777, true);
             }
 
-            $this->file->move($this->basePath, $this->fileName);
+            if ( ! $this->alreadySaved) {
+                $this->alreadySaved = true;
+                $this->file->move($this->basePath, $this->fileName);
+            } else {
+                throw new \Exception('call second time');
+            }
         }
     }
 

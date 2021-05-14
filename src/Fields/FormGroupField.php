@@ -93,4 +93,9 @@ class FormGroupField extends Field
 
         $this->nestedForm->load($localData, $localFiles ?? null);
     }
+
+    public function afterSave()
+    {
+        $this->nestedForm->save();
+    }
 }

@@ -4,7 +4,6 @@ namespace Owlcoder\Forms\Fields;
 
 use Owlcoder\Common\Helpers\ViewHelper;
 use Owlcoder\Forms\Form;
-use Illuminate\Support\Arr;
 use Owlcoder\Common\Helpers\DataHelper;
 
 class ArrayField extends Field
@@ -14,14 +13,6 @@ class ArrayField extends Field
     public $createInstance;
     public $nestedConfig;
     public $sortField = null;
-
-//    /**
-//     * Field can not apply itself. It calls child forms to apply data
-//     * @var bool
-//     */
-//    public $canApply = false;
-
-    public $onBeforeEachSave;
 
     /** @var Form[] */
     public $forms = [];
@@ -56,6 +47,9 @@ class ArrayField extends Field
         $this->hiddenForm = $this->createHiddenForm();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function fetchData()
     {
         $instances = DataHelper::get($this->instance, $this->attribute);
@@ -84,6 +78,12 @@ class ArrayField extends Field
         return $valid === 1;
     }
 
+    /**
+     * Create form from by index and one instance
+     * @param $instance
+     * @param $index
+     * @return Form
+     */
     public function createForm($instance, $index)
     {
         $name = join('.', [$this->namePrefix, $this->attribute, $index]);
@@ -141,6 +141,9 @@ class ArrayField extends Field
         }, $this->forms);
     }
 
+    /**
+     * Create form before loading data in a form
+     */
     public function createInitialForms()
     {
         if (is_array($this->value)) {
@@ -160,6 +163,9 @@ class ArrayField extends Field
         $this->hiddenForm = $this->createHiddenForm();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function apply()
     {
         return DataHelper::set($this->instance, $this->attribute, $this->toArray()[$this->attribute]);
@@ -183,7 +189,7 @@ class ArrayField extends Field
         $localData = DataHelper::get($data, $this->attribute);
         $localFiles = DataHelper::get($files, $this->attribute);
 
-//        $handledKeys = [];
+        //        $handledKeys = [];
 
         if (is_array($localData)) {
             foreach ($localData as $k => $formData) {
@@ -258,6 +264,9 @@ class ArrayField extends Field
         ];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function beforeSave()
     {
         foreach ($this->forms as $form) {
@@ -265,6 +274,9 @@ class ArrayField extends Field
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function afterSave()
     {
         foreach ($this->forms as $form) {

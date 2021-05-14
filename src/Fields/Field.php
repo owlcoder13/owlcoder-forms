@@ -194,6 +194,9 @@ class Field implements IFieldEvent
         return '';
     }
 
+    /**
+     * Write data from the form to an instance
+     */
     public function apply()
     {
         if ($this->canApply) {
@@ -213,6 +216,9 @@ class Field implements IFieldEvent
         }
     }
 
+    /**
+     * Execute before instance saving
+     */
     public function beforeSave()
     {
         if (isset($this->config['beforeSave'])) {
@@ -222,6 +228,9 @@ class Field implements IFieldEvent
         $this->triggerEvent(self::EVENT_BEFORE_SET, $this);
     }
 
+    /**
+     * Execute before instance saving
+     */
     public function afterSave()
     {
         if (isset($this->config['afterSave'])) {
@@ -229,6 +238,9 @@ class Field implements IFieldEvent
         }
     }
 
+    /**
+     * Get data array from the form
+     */
     public function toArray()
     {
         return [$this->attribute => $this->getValue()];
@@ -256,6 +268,22 @@ class Field implements IFieldEvent
         return $out;
     }
 
+    public function buildContext()
+    {
+        return [
+            'field' => $this,
+        ];
+    }
+
+    public function getFileByKey($files, $key, $default = null)
+    {
+        $file = DataHelper::get($files, $key, $default);
+        return empty($file) ? $default : $file;
+    }
+
+
+    // ==================== render methods ====================
+
     public function renderInput()
     {
         $attributes = array_merge($this->getInputAttributes(), [
@@ -264,13 +292,6 @@ class Field implements IFieldEvent
         ]);
 
         return Html::tag('input', '', $attributes);
-    }
-
-    public function buildContext()
-    {
-        return [
-            'field' => $this,
-        ];
     }
 
     public function renderLabel()
@@ -308,12 +329,6 @@ class Field implements IFieldEvent
 
 
         return $out;
-    }
-
-    public function getFileByKey($files, $key, $default = null)
-    {
-        $file = DataHelper::get($files, $key, $default);
-        return empty($file) ? $default : $file;
     }
 
 }
