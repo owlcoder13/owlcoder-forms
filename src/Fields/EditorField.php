@@ -3,6 +3,7 @@
 namespace Owlcoder\Forms\Fields;
 
 use Owlcoder\Forms\Form;
+use Owlcoder\Common\Helpers\ViewHelper;
 
 class EditorField extends TextAreaField
 {
@@ -11,6 +12,7 @@ class EditorField extends TextAreaField
 
     public function js()
     {
-        return Form::removeScriptTag(view('forms::editor-field-js', ['field' => $this]));
+        $viewPath = __DIR__ . '/../../resources/views/editor-field-js.php';
+        return Form::removeScriptTag(ViewHelper::Render($viewPath, ['field' => $this]));
     }
 }
