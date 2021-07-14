@@ -43,7 +43,7 @@ class Form implements IFormEvent
         $this->instance = &$instance ?? [];
 
         // For working with multiple forms on page
-        if ( ! empty($config['namePrefix'])) {
+        if (!empty($config['namePrefix'])) {
             $this->namePrefix = $config['namePrefix'];
         }
 
@@ -128,11 +128,11 @@ class Form implements IFormEvent
 
     public function load($data = [], $files = [])
     {
-        if ( ! (is_array($data) && count($data) != 0) && ! (is_array($files) && count($files) != 0)) {
+        if (!(is_array($data) && count($data) != 0) && !(is_array($files) && count($files) != 0)) {
             return false;
         }
 
-        if ($this->parentForm == null && ! empty($this->namePrefix)) {
+        if ($this->parentForm == null && !empty($this->namePrefix)) {
             $data = DataHelper::get($data, $this->namePrefix, []);
         }
 
@@ -152,7 +152,7 @@ class Form implements IFormEvent
      */
     public function save()
     {
-        if ( ! $this->validate()) {
+        if (!$this->validate()) {
             return false;
         }
 
@@ -165,14 +165,14 @@ class Form implements IFormEvent
         }
 
         // form before save
-        if ( ! $this->beforeSave()) {
+        if (!$this->beforeSave()) {
             return false;
         }
 
         // save instance
         $s = $this->saveInstance();
 
-        if ( ! $s) {
+        if (!$s) {
             return $s;
         }
 
@@ -217,7 +217,6 @@ class Form implements IFormEvent
             method_exists($this->instance, 'save')) {
 
             return $this->instance->save();
-
         }
 
         return true;
@@ -225,7 +224,7 @@ class Form implements IFormEvent
 
     public static function removeScriptTag($content)
     {
-        $content = (string) $content;
+        $content = (string)$content;
 
         if (StringHelper::startsWith($content, '<script')) {
 
@@ -280,7 +279,7 @@ class Form implements IFormEvent
 
         $this->triggerEvent(self::FIELD_INSTANCE_GET_VALUE, $ref);
 
-        if ( ! $event->prevented) {
+        if (!$event->prevented) {
             return DataHelper::get($instance, $attribute);
         }
 
@@ -303,7 +302,7 @@ class Form implements IFormEvent
 
         $this->triggerEvent(self::FIELD_INSTANCE_SET_VALUE, $ref);
 
-        if ( ! $event->prevented) {
+        if (!$event->prevented) {
             $value = DataHelper::get($event->data, $event->attribute);
             DataHelper::set($field->instance, $field->attribute, $value);
         }

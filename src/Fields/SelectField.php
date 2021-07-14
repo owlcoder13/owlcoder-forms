@@ -2,12 +2,14 @@
 
 namespace Owlcoder\Forms\Fields;
 
+use Owlcoder\Common\Helpers\DataHelper;
 use Owlcoder\Common\Helpers\Html;
 
 class SelectField extends Field
 {
     public $options = [];
     public $showEmpty = true;
+    public $nullOnEmpty = false;
 
     public function __construct($config, &$instance, &$form)
     {
@@ -42,5 +44,17 @@ class SelectField extends Field
         }
 
         return Html::tag('select', $out, $attributes);
+    }
+
+    public function apply()
+    {
+        if ($this->nullOnEmpty) {
+            if (empty($this->value)) {
+                DataHelper::set($this->instance, $this->attribute, null);
+                return;
+            }
+        }
+
+        parent::apply();
     }
 }
