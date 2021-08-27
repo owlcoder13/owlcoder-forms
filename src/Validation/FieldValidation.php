@@ -99,6 +99,8 @@ trait FieldValidation
                 return new NumberValidator($field, $options);
             case 'email':
                 return new EmailValidator($field, $options);
+            case 'filter':
+                return new FilterValidator($field, $options);
         }
 
         return null;
