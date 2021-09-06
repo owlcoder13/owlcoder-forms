@@ -52,13 +52,13 @@ trait FormValidation
                 }
             }
 
-            if (!is_array($fields)) { // if simple string
+            if ( ! is_array($fields)) { // if simple string
                 $fields = [$fields];
             }
 
 
             foreach ($fields as $field) {
-                if (!empty($this->fields[$field])) {
+                if ( ! empty($this->fields[$field])) {
                     $this->fields[$field]->rules[] = $validator;
                 }
             }
@@ -82,7 +82,7 @@ trait FormValidation
         $this->triggerEvent(self::BEFORE_VALIDATE, $this);
 
         foreach ($this->fields as $field) {
-            if (!$field->validate() && !empty($field->errors)) {
+            if ( ! $field->validate() && ! empty($field->errors)) {
                 $this->addError($field->attribute, $field->errors);
             }
         }
@@ -99,7 +99,7 @@ trait FormValidation
         foreach ($this->formRules as $formRule) {
 
             if (is_callable($formRule)) {
-                call_user_func($formRule);
+                call_user_func($formRule, $this);
             }
 
             if ($formRule instanceof \Closure) {
