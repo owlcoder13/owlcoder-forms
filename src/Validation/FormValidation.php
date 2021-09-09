@@ -103,7 +103,7 @@ trait FormValidation
             }
 
             if ($formRule instanceof \Closure) {
-                $formRule();
+                $formRule($this);
             }
         }
     }
