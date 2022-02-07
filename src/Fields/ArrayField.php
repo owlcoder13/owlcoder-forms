@@ -52,9 +52,14 @@ class ArrayField extends Field
      */
     public function fetchData()
     {
+        // fetch from config
+        if (isset($this->config['fetchData']) && is_callable($this->config['fetchData'])) {
+            return $this->config['fetchData']($this);
+        }
+
         $instances = DataHelper::get($this->instance, $this->attribute);
 
-        if (empty($instances) || ! is_array($instances)) {
+        if (empty($instances) || !is_array($instances)) {
             $instances = [];
         }
 
@@ -92,7 +97,7 @@ class ArrayField extends Field
             'namePrefix' => $name,
         ];
 
-        if ( ! empty($this->nestedConfig)) {
+        if (!empty($this->nestedConfig)) {
             $config = array_merge($config, $this->nestedConfig);
         }
 

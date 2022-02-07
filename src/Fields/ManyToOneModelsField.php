@@ -13,9 +13,13 @@ use Owlcoder\Common\Helpers\DataHelper;
  */
 class ManyToOneModelsField extends ArrayField
 {
-
+    /**
+     * @var string this fields adds items of such modelClassName objects
+     */
     public $modelClassName;
-    public $fkField;
+    public $fkField = null;
+    public $callbackBeforeNewModelsSaving;
+
     public $formsToDelete = [];
 
     public function createEmptyInstance()
@@ -43,6 +47,10 @@ class ManyToOneModelsField extends ArrayField
 
     public function fetchData()
     {
+        if (isset($this->config['fetchData']) && is_callable($this->config['fetchData'])) {
+            return $this->config['fetchData']($this);
+        }
+
         $attr = $this->attribute;
         $value = $this->instance->$attr;
 
@@ -65,7 +73,18 @@ class ManyToOneModelsField extends ArrayField
         $fkField = $this->fkField;
 
         foreach ($this->forms as $key => $form) {
-            $form->instance[$fkField] = $this->instance->id;
+
+            // set fk fields to related model if specified
+            if ($fkField) {
+                $form->instance[$fkField] = $this->instance->id;
+            }
+
+            // run callback if specified
+            if ($this->callbackBeforeNewModelsSaving) {
+                $callback = $this->callbackBeforeNewModelsSaving;
+                $callback($form);
+            }
+
             if ($this->sortField) {
                 $form->instance[$this->sortField] = $key;
             }
