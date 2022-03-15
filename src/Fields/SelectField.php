@@ -38,8 +38,10 @@ class SelectField extends Field
         $attributes = $this->getInputAttributes();
         $out = '';
 
+        $currentValue = $this->getValue();
+
         foreach ($this->options as $key => $one) {
-            $selected = $key == $this->getValue() ? 'selected' : '';
+            $selected = $currentValue != null && $key == $this->getValue() ? 'selected' : '';
             $out .= Html::tag('option', $one, ['value' => $key, 'selected' => $selected ? true : null]);
         }
 
