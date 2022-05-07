@@ -183,12 +183,11 @@ class Form implements IFormEvent
 
     public function fieldAfterSave()
     {
-
     }
 
     public function apply()
     {
-        foreach ($this->fields as $field) {
+        foreach ($this->fields as &$field) {
             $field->apply();
         }
     }
@@ -213,9 +212,10 @@ class Form implements IFormEvent
      */
     public function saveInstance()
     {
-        if (is_object($this->instance) &&
-            method_exists($this->instance, 'save')) {
-
+        if (
+            is_object($this->instance) &&
+            method_exists($this->instance, 'save')
+        ) {
             return $this->instance->save();
         }
 
@@ -234,7 +234,6 @@ class Form implements IFormEvent
             if ($end !== false && $lastTagPos !== false) {
                 $content = mb_substr($content, $end + 1, $lastTagPos - strlen('</script>'));
             }
-
         }
 
         return $content;
@@ -329,7 +328,7 @@ class Form implements IFormEvent
     /**
      * @param Field $field
      */
-    public function applyAttributeData($field)
+    public function applyAttributeData(&$field)
     {
         if (isset($this->config['applyAttributeData'])) {
             $this->config['applyAttributeData']($field);
@@ -338,7 +337,7 @@ class Form implements IFormEvent
             $value = $field->value;
 
             // if field is empty - set in to null
-            if ($field->nullIfEmpty && empty($value)) {
+            if ($field->nullIfEmpty && $value == '') {
                 $value = null;
             }
 

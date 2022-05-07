@@ -66,7 +66,11 @@ class Field implements IFieldEvent
         $this->label = $config['label'] ?? $config['attribute'] ?? '';
         $this->rules = $config['rules'] ?? [];
 
-        $namePrefix = ! empty($config['namePrefix']) ? $config['namePrefix'] . '.' : '';
+        foreach ($config['events'] ?? [] as $event => $callable) {
+            $this->addEventListener($event, $callable);
+        }
+
+        $namePrefix = !empty($config['namePrefix']) ? $config['namePrefix'] . '.' : '';
         $tmpName = $namePrefix . ($config['name'] ?? $this->attribute);
 
         $this->idPrefix = $config['idPrefix'] ?? '';
@@ -180,6 +184,9 @@ class Field implements IFieldEvent
         return is_array($data) && array_key_exists($this->attribute, $data);
     }
 
+    /**
+     * Try to fetch data from instance
+     */
     public function getValueFromData($data, $file)
     {
         if (isset($this->config['getValueFromData'])) {
@@ -189,16 +196,21 @@ class Field implements IFieldEvent
         return DataHelper::get($data, $this->attribute);
     }
 
+    /**
+     * Represent js for current field instance
+     */
     public function js()
     {
         return '';
     }
 
     /**
-     * Write data from the form to an instance
+     * Write data from the form field to the instance field
      */
     public function apply()
     {
+        $this->triggerEvent(self::EVENT_BEFORE_APPLY, $this);
+
         if ($this->canApply) {
             if (isset($this->config['apply'])) {
 
@@ -209,7 +221,6 @@ class Field implements IFieldEvent
                 if (is_callable($this->config['apply'])) {
                     $this->config['apply']($this);
                 }
-
             } else {
                 $this->form->applyAttributeData($this);
             }
@@ -313,7 +324,7 @@ class Field implements IFieldEvent
 
     public function renderTip()
     {
-        if ( ! empty($this->tip)) {
+        if (!empty($this->tip)) {
             return Html::tag('div', $this->tip, [
                 'class' => 'form-tip'
             ]);
@@ -330,5 +341,4 @@ class Field implements IFieldEvent
 
         return $out;
     }
-
 }
