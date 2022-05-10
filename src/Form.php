@@ -33,8 +33,14 @@ class Form implements IFormEvent
 
     public static $defaultConnector = ArrayConnector::class;
 
-
     public static $formCounter = 0;
+
+    /**
+     * For additional props in the extended form
+     */
+    public function configToProps($config)
+    {
+    }
 
     public function __construct($config = [], &$instance = null, &$parentForm = null)
     {
@@ -51,6 +57,7 @@ class Form implements IFormEvent
         $this->config = $config;
         $this->rules = array_merge($this->rules(), $config['rules'] ?? []);
 
+        $this->configToProps($config);
         $this->registerEventsFromConfig();
 
         foreach ($config as $key => $handler) {
@@ -71,6 +78,7 @@ class Form implements IFormEvent
         $config['fields'] = $config['fields'] ?? [];
 
         $totalFields = array_merge($this->getFields(), $config['fields']);
+
         foreach ($totalFields as $key => $value) {
             $fieldConf = Field::normalizeFormConfig($key, $value);
             $this->fields[$fieldConf['attribute']] = $this->createField($fieldConf, $i);

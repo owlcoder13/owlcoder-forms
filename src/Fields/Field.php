@@ -54,6 +54,10 @@ class Field implements IFieldEvent
 
     /** @var bool May field write data back to source or not */
     public $canApply = true;
+
+    /** @var bool Base function for fetch attribute */
+    public $canFetch = true;
+
     public $tip;
 
 
@@ -91,11 +95,15 @@ class Field implements IFieldEvent
      */
     public function fetchData()
     {
-        if (isset($this->config['fetchData']) && is_callable($this->config['fetchData'])) {
-            $this->config['fetchData']($this);
-        } else {
-            $this->form->fetchAttributeData($this);
+        if ($this->canFetch) {
+            if (isset($this->config['fetchData']) && is_callable($this->config['fetchData'])) {
+                $this->config['fetchData']($this);
+            } else {
+                $this->form->fetchAttributeData($this);
+            }
         }
+
+        $this->triggerEvent(static::EVENT_FETCH_VALUE, $this);
     }
 
     /**
@@ -247,6 +255,8 @@ class Field implements IFieldEvent
         if (isset($this->config['afterSave'])) {
             $this->config['afterSave']($this);
         }
+
+        $this->triggerEvent(static::EVENT_AFTER_SAVE, $this);
     }
 
     /**
