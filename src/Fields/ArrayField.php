@@ -173,7 +173,9 @@ class ArrayField extends Field
      */
     public function apply()
     {
-        return DataHelper::set($this->instance, $this->attribute, $this->toArray()[$this->attribute]);
+        if ($this->canApply) {
+            return DataHelper::set($this->instance, $this->attribute, $this->toArray()[$this->attribute]);
+        }
     }
 
     /**
@@ -240,8 +242,10 @@ class ArrayField extends Field
     public function js()
     {
         return Form::removeScriptTag(
-            ViewHelper::Render(__DIR__ . '/../../resources/views/array-field-js.php',
-                ['field' => $this])
+            ViewHelper::Render(
+                __DIR__ . '/../../resources/views/array-field-js.php',
+                ['field' => $this]
+            )
         );
     }
 
