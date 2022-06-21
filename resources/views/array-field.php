@@ -5,7 +5,7 @@ $formStyle = "margin: 10px 0 10px 40px; padding: 20px; border: 1px dashed gray;"
 ?>
 
 <div class="field" id="<?=$field->id?>">
-    <?=$field->label?> (<?=count($field->forms)?>)
+    <label><?=$field->label?></label> (<?=count($field->forms)?>)
 
     <div class="hidden-form" style="display: none;">
         <div class="form" style="<?=$formStyle?>">
