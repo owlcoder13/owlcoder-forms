@@ -224,7 +224,8 @@ class Form implements IFormEvent
             is_object($this->instance) &&
             method_exists($this->instance, 'save')
         ) {
-            return $this->instance->save();
+            $this->instance->save();
+            return true;
         }
 
         return true;
