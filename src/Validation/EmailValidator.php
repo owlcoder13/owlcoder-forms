@@ -2,7 +2,7 @@
 
 namespace Owlcoder\Forms\Validation;
 
-class RegexpValidator extends Validator
+class EmailValidator extends Validator
 {
     public $pattern = null;
 
@@ -12,7 +12,7 @@ class RegexpValidator extends Validator
     {
         $value = $this->getValue();
 
-        if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
             $this->addError(sprintf($this->message, $this->pattern));
         }
     }
