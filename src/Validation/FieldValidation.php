@@ -2,7 +2,7 @@
 
 namespace Owlcoder\Forms\Validation;
 
-use Egulias\EmailValidator\EmailValidator;
+use Owlcoder\Forms\Validation\EmailValidator;
 use Owlcoder\Forms\Form;
 
 /**
