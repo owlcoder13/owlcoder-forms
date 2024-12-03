@@ -60,6 +60,8 @@ class Field implements IFieldEvent
 
     public $tip;
 
+    /** @var bool is this field disabled or not */
+    public $disabled;
 
     public function __construct(array $config, &$instance, Form &$form)
     {
@@ -213,13 +215,23 @@ class Field implements IFieldEvent
     }
 
     /**
+     * Decide is this field can apply data:
+     * - canApply attribute
+     * - is this form disabled attribute
+     */
+    public function isFieldCanApply(): bool
+    {
+        return $this->canApply && !$this->disabled;
+    }
+
+    /**
      * Write data from the form field to the instance field
      */
     public function apply()
     {
         $this->triggerEvent(self::EVENT_BEFORE_APPLY, $this);
 
-        if ($this->canApply) {
+        if ($this->isFieldCanApply()) {
             if (isset($this->config['apply'])) {
 
                 if ($this->config['apply'] === false) {
@@ -284,6 +296,11 @@ class Field implements IFieldEvent
             } else if ($ia instanceof \Closure) {
                 $out = array_merge($out, $ia($this));
             }
+        }
+
+        // disable input if form is disabled to editing
+        if ($this->disabled) {
+            $out['disabled'] = true;
         }
 
         return $out;
