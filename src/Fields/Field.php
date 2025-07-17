@@ -84,6 +84,10 @@ class Field implements IFieldEvent
         $this->id = $this->idPrefix . ($config['id'] ?? str_replace('.', '_', $tmpName));
 
         foreach ($config as $key => $val) {
+            if($key == 'class') {
+                continue;
+            }
+
             DataHelper::set($this, $key, $val);
         }
 
